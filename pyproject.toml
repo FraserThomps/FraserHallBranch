@@ -1,20 +1,18 @@
 [project]
-name = "HallPy_uogPhys_ShreyanshJF"
-version = "0.0.1"
+name = "HallPy_uofgPhys_ShreyanshJF"
+version = "0.0.15"
 authors = [
     {name="Shreyansh Fofandi", email="shreyanshjf@gmail.com"},
     {name="Ian MacLaren", email="ian.MacLaren@glasgow.ac.uk"},
 ]
 description = "A python library to aid physics students in performing lab activities. Developed for the School of Physics and Astronomy at the University of Glasgow."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.0"
 classifiers = [
-    "Development Status :: 1-Planning",
     "Programming Language :: Python :: 3",
     "License :: Freely Distributable",
     "Intended Audience :: Education",
     "Framework :: Jupyter",
     "Operating System :: OS Independent",
-    "Natural  Language :: English",
     "Topic :: Education :: Computer Aided Instruction (CAI)",
 ]

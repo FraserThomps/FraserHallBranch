@@ -5,3 +5,4 @@ supportedEquipment = {
 }
 """List of supported instruments sorted by the type of instruments
 """
+

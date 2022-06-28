@@ -29,13 +29,14 @@ import os
 import sys
 import time
 import pyvisa
-import constants
 import numpy as np
-import helper as hallPyHelp
 import matplotlib.pyplot as plt
 import ipywidgets as widgets
 from IPython.display import clear_output
 from IPython.display import Image as ipImage
+import asyncio
+from .constants import supportedEquipment
+from .helper import sortArrByKey, reconnectInstructions
 
 
 def initInstruments():
@@ -60,46 +61,49 @@ def initInstruments():
 
     for i in res:
         try:
-            instObj = rm.open_resource(i)
-            name = instObj.query("*IDN?")
+            # Creating the inst object to be used in the experiments functions (heSetup(), cwSetup(), etc.)
+            instResource = rm.open_resource(i)
+            name = instResource.query("*IDN?")
             inst = {
-                'inst': instObj,
+                'inst': instResource,
                 'name': name,
                 'resName': i
             }
 
-            for instrumentType in constants.supportedEquipment.keys():
-                for i in constants.supportedEquipment[instrumentType]:
+            for instrumentType in supportedEquipment.keys():
+                for i in supportedEquipment[instrumentType]:
                     if i in name:
                         inst['type'] = instrumentType
 
-            if inst['type'] is None:
+            if len(inst.keys()) == 3:
                 inst['type'] = 'Unknown'
 
             instruments.append(inst)
+        except:
+            pass
         finally:
             pass
 
-    instTypeCount = constants.supportedEquipment.copy()
+    instTypeCount = supportedEquipment.copy()
 
     for instrumentType in instTypeCount:
-        instTypeCount[instrumentType] = np.size(hallPyHelp.sortArrByKey(instruments, 'type', instrumentType))
+        instTypeCount[instrumentType] = np.size(sortArrByKey(instruments, 'type', instrumentType))
 
-    instTypeCount['Unknown'] = np.size(hallPyHelp.sortArrByKey(instruments, 'type', 'Unknown'))
+    instTypeCount['Unknown'] = np.size(sortArrByKey(instruments, 'type', 'Unknown'))
 
     if all(instrumentCount == 0 for instrumentCount in instTypeCount.values()):
         print("\x1b[;43m No instruments could be recognised / contacted")
         print('')
-        hallPyHelp.reconnectInstructions()
+        reconnectInstructions()
         raise Exception("No instruments could be recognised / contacted")
     else:
         countStr = ''
         for instrumentType in instTypeCount:
             if instTypeCount[instrumentType] != 0:
-                countStr = countStr + str(instTypeCount[instrumentType]) + instrumentType + "(s) "
+                countStr = countStr + str(instTypeCount[instrumentType]) + " " + instrumentType + "(s)   "
 
         print(countStr)
         print('')
-        hallPyHelp.reconnectInstructions()
+        reconnectInstructions()
 
         return instruments
