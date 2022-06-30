@@ -21,7 +21,7 @@ Submodules
 ----------
 + constants.py
 + helper.py
-+ experiments.py
++ curieWeiss.py
 
 """
 
@@ -35,17 +35,17 @@ import ipywidgets as widgets
 from IPython.display import clear_output
 from IPython.display import Image as ipImage
 import asyncio
-from .constants import supportedEquipment
-from .helper import sortArrByKey, reconnectInstructions
+from .constants import supportedInstruments
+from helper import __all__ as hpHelp
 
 
-def initInstruments():
+def initInstruments(inGui=False):
     """Initializing and recognising connected equipment.
 
     Function does the setup for any of the experiments which use this library. It recognises the connected instruments
     and provides the instruments in the form the `inst` object. It also classifies by their functions depending on
     their manufacturer & model number found by querying the instrument with the pyvisa library
-    (`instObj.query("*IDN?")`). The list of supported instruments is in the constants module.
+    (`instObj.query("*IDN?")`). The list of supported instruments is in the constants' module.
 
     See Also
     --------
@@ -70,40 +70,35 @@ def initInstruments():
                 'resName': i
             }
 
-            for instrumentType in supportedEquipment.keys():
-                for i in supportedEquipment[instrumentType]:
-                    if i in name:
+            for instrumentType in supportedInstruments.keys():
+                for supportedInstrumentName in supportedInstruments[instrumentType]:
+                    if supportedInstrumentName in name:
                         inst['type'] = instrumentType
 
             if len(inst.keys()) == 3:
                 inst['type'] = 'Unknown'
 
             instruments.append(inst)
-        except:
+        except pyvisa.VisaIOError:
             pass
         finally:
             pass
 
-    instTypeCount = supportedEquipment.copy()
-
-    for instrumentType in instTypeCount:
-        instTypeCount[instrumentType] = np.size(sortArrByKey(instruments, 'type', instrumentType))
-
-    instTypeCount['Unknown'] = np.size(sortArrByKey(instruments, 'type', 'Unknown'))
+    instTypeCount = hpHelp.getInstTypeCount(instruments)
 
     if all(instrumentCount == 0 for instrumentCount in instTypeCount.values()):
-        print("\x1b[;43m No instruments could be recognised / contacted")
+        print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
         print('')
-        reconnectInstructions()
+        hpHelp.reconnectInstructions(inGui)
         raise Exception("No instruments could be recognised / contacted")
     else:
         countStr = ''
-        for instrumentType in instTypeCount:
+        for instrumentType in instTypeCount.keys():
             if instTypeCount[instrumentType] != 0:
                 countStr = countStr + str(instTypeCount[instrumentType]) + " " + instrumentType + "(s)   "
 
         print(countStr)
         print('')
-        reconnectInstructions()
+        hpHelp.reconnectInstructions(inGui)
 
         return instruments
