@@ -30,9 +30,9 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from .helper import __all__ as hpHelp
 from . import curieWeiss
 from .constants import supportedInstruments
+from .helper import reconnectInstructions, getInstTypeCount
 
 
 def initInstruments(inGui=False):
@@ -80,12 +80,12 @@ def initInstruments(inGui=False):
         finally:
             pass
 
-    instTypeCount = hpHelp.getInstTypeCount(instruments)
+    instTypeCount = getInstTypeCount(instruments)
 
     if all(instrumentCount == 0 for instrumentCount in instTypeCount.values()):
         print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
         print('')
-        hpHelp.reconnectInstructions(inGui)
+        reconnectInstructions(inGui)
         raise Exception("No instruments could be recognised / contacted")
     else:
         countStr = ''
@@ -95,7 +95,7 @@ def initInstruments(inGui=False):
 
         print(countStr)
         print('')
-        hpHelp.reconnectInstructions(inGui)
+        reconnectInstructions(inGui)
 
         return instruments
 
