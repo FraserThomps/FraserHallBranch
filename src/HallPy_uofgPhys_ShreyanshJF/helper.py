@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.HallPy_uofgPhys_ShreyanshJF import supportedInstruments
+from .constants import supportedInstruments
 
 
 def sortArrByKey(arr, key, val):

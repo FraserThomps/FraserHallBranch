@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: HallPy-uofgPhys-ShreyanshJF
-Version: 0.0.15
+Version: 0.0.19
 Summary: A python library to aid physics students in performing lab activities. Developed for the School of Physics and Astronomy at the University of Glasgow.
 Author-email: Shreyansh Fofandi <shreyanshjf@gmail.com>, Ian MacLaren <ian.MacLaren@glasgow.ac.uk>
 Classifier: Programming Language :: Python :: 3

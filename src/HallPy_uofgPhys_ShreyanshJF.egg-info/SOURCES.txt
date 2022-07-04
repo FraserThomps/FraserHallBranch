@@ -3,6 +3,7 @@ README.md
 pyproject.toml
 src/HallPy_uofgPhys_ShreyanshJF/__init__.py
 src/HallPy_uofgPhys_ShreyanshJF/constants.py
+src/HallPy_uofgPhys_ShreyanshJF/curieWeiss.py
 src/HallPy_uofgPhys_ShreyanshJF/helper.py
 src/HallPy_uofgPhys_ShreyanshJF.egg-info/PKG-INFO
 src/HallPy_uofgPhys_ShreyanshJF.egg-info/SOURCES.txt
