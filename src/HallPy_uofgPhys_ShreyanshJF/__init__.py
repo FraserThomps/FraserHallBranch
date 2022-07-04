@@ -30,7 +30,7 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from helper import __all__ as hpHelp
+from .helper import __all__ as hpHelp
 from . import curieWeiss
 from .constants import supportedInstruments
 
