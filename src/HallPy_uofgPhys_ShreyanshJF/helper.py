@@ -1,4 +1,7 @@
+import time
+
 import numpy as np
+from pyvisa import VisaIOError
 
 from .constants import supportedInstruments
 
@@ -57,7 +60,7 @@ def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False)
               + instType + ". \x1b[m")
 
 
-def checkExpReqInstruments(requiredEquipment=None, instruments=None, serials=None, inGui=False):
+def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
     if serials is None:
         serials = {}
     if requiredEquipment is None:
@@ -74,7 +77,7 @@ def checkExpReqInstruments(requiredEquipment=None, instruments=None, serials=Non
         raise Exception("No instruments could be recognised / contacted.")
 
     instTypeCount = getInstTypeCount(instruments)
-    foundReqInsts = {}
+    expInstruments = {}
 
     for instType in requiredEquipment.keys():
         if instType not in instTypeCount.keys():
@@ -89,11 +92,12 @@ def checkExpReqInstruments(requiredEquipment=None, instruments=None, serials=Non
                 instNeededObj = {
                     "res": {},
                     "type": instType,
-                    "purpose": instNeeded['purpose']
+                    "purpose": instNeeded['purpose'],
+                    "config": instNeeded['config']
                 }
-                foundReqInsts[instNeeded["var"]] = instNeededObj
+                expInstruments[instNeeded["var"]] = instNeededObj
                 if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
-                    foundReqInsts[instNeeded["var"]]["res"] = sortArrByKey(instruments, 'type', instType)[0]
+                    expInstruments[instNeeded["var"]]["res"] = sortArrByKey(instruments, 'type', instType)[0]
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                     print("\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used for "
                           + instNeededObj["purpose"] + " measurement. \x1b[m")
@@ -102,7 +106,16 @@ def checkExpReqInstruments(requiredEquipment=None, instruments=None, serials=Non
                 else:
                     serial = serials[instNeeded["var"]]
                     foundInsts = list(filter(lambda instrument: serial in instrument['name'], instruments))
-                    if len(foundInsts) != 1:
+                    if len(foundInsts) == 0:
+                        print("\x1b[;43m  Please use a valid serial number for the " + instType + ". \x1b[m")
+                        print("Serial number entered: " + serial)
+                        print("Found Instruments | " + instType + "(s) : ")
+                        print("Available " + instType + "(s): ")
+                        for inst in sortArrByKey(instruments, 'type', instType):
+                            print("   " + inst['name'].replace("\n", " "))
+                            print(" ")
+                        raise Exception("No instruments with given serial number found.")
+                    elif len(foundInsts) != 1:
                         print("\x1b[;43m  Please call a Lab Technician or IT support. \x1b[m")
                         print("Multiple instruments with same serial number found")
                         print("Serial number in question: " + serial)
@@ -119,9 +132,17 @@ def checkExpReqInstruments(requiredEquipment=None, instruments=None, serials=Non
                             print(" ")
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
-                        foundReqInsts[instNeeded["var"]]["res"] = foundInsts[0]
-
-    return foundReqInsts
+                        expInstruments[instNeeded["var"]]["res"] = foundInsts[0]
+                for confLine in instNeeded['config']:
+                    try:
+                        instNeeded['res'].write(confLine)
+                        time.sleep(0.2)
+                    except VisaIOError:
+                        print("\x1b[;43m Error occurred while configuring " + instNeeded['type'] + " for "
+                              + instNeeded['purpose'] + " measurement. ")
+                        print("Please check experiment config lines")
+                        raise
+    return expInstruments
 
 
 __all__ = [reconnectInstructions, sortArrByKey, getInstTypeCount]

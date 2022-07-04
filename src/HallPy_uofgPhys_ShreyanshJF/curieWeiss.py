@@ -1,13 +1,11 @@
-import time
-
-from .helper import reconnectInstructions, checkExpReqInstruments
+from .helper import reconnectInstructions, getAndSetupExpInsts
 
 requiredEquipment = {
     "LCR Meter": [
                     {"purpose": "Capacitance", "var": "lcr"}
                 ],
     "Multimeter": [
-                      {"purpose": "Temperature", "var": "mm"}
+                      {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
                   ],
 }
 
@@ -28,11 +26,7 @@ def setup(instruments=None, lcr=0, mm=0, inGui=False):
         reconnectInstructions(inGui)
         raise Exception("No instruments could be recognised / contacted")
 
-    foundReqInstruments = checkExpReqInstruments(requiredEquipment, instruments, serials, inGui)
-
-    foundReqInstruments["mm"]["res"].write("CONF:TCO")
-    time.sleep(0.2)
-    foundReqInstruments["mm"]["res"].wite("TCO:TYPE T")
+    foundReqInstruments = getAndSetupExpInsts(requiredEquipment, instruments, serials, inGui)
 
     print("\x1b[;42m Instruments ready to use for Curie Weiss experiment \x1b[m")
     print("Proceed as shown:")

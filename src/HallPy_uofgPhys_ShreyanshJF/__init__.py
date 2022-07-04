@@ -106,6 +106,24 @@ def HallPy_Teach(btn=None):
     clear_output()
     instruments = initInstruments(inGui=True)
 
+    expChoices = [
+        # To Add Hall Effect Later
+        # ("Hall Effect Lab", "he"),
+        ("Curie Weiss Lab", "cw")
+    ]
+    pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
+    submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
+    onStartWidgets = [pickExpDropdown, submitBtn]
+
+    print(" ")
+    print("Choose experiment to perform")
+    display(widgets.VBox(onStartWidgets))
+
+    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts):
+        # DO NEXT
+        print('TO DO')
+        print(expSetupFunc, expReq, availableInsts)
+
     def handle_pickExpSubmit(submitBtnAfterClick=None):
 
         clear_output()
@@ -113,11 +131,13 @@ def HallPy_Teach(btn=None):
         submitBtnAfterClick.icon = "spinner"
         submitBtnAfterClick.disabled = True
         exp = pickExpDropdown.value
-
         try:
             if exp == 'cw':
-                # Add serial number handling later
-                curieWeiss.setup(instruments, inGui=True)
+                assignInstsAndSetupExp(
+                    expSetupFunc=curieWeiss.setup,
+                    expReq=curieWeiss.requiredEquipment,
+                    availableInsts=instruments
+                )
         except:
             pickExpDropdown.close()
             submitBtn.close()
@@ -129,24 +149,4 @@ def HallPy_Teach(btn=None):
 
             display(widgets.VBox([restartSetupBtn]))
 
-    expChoices = [
-        # To Add Hall Effect Later
-        # ("Hall Effect Lab", "he"),
-        ("Curie Weiss Lab", "cw")
-    ]
-
-    print(" ")
-    print("Choose experiment to perform")
-
-    pickExpDropdown = widgets.Dropdown(
-        options=expChoices,
-        disabled=False
-    )
-    submitBtn = widgets.Button(
-        description="Setup Experiment",
-        icon="flask"
-    )
     submitBtn.on_click(handle_pickExpSubmit)
-    widgetsToDisplay = [pickExpDropdown, submitBtn]
-
-    display(widgets.VBox(widgetsToDisplay))
