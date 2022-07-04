@@ -9,7 +9,7 @@ Description
 -----------
 HallPy_Teach uses the pyvisa package to communicate with lab equipment. It is intended to be used as an CAI (Computer
 Assisted Instruction) library to let students get setup with labs in a straight forward way. It exposes functions which
-can be used to develop any type of computer operated lab if the lab equipment operates on the VISA specificifications
+can be used to develop any type of computer operated lab if the lab equipment operates on the VISA specifications
 and is supported by pyvisa.
 
 Notes
@@ -25,18 +25,14 @@ Submodules
 
 """
 
-import os
-import sys
-import time
 import pyvisa
-import numpy as np
-import matplotlib.pyplot as plt
-import ipywidgets as widgets
+from IPython.core.display import display
 from IPython.display import clear_output
-from IPython.display import Image as ipImage
-import asyncio
-from .constants import supportedInstruments
+import ipywidgets as widgets
+
 from helper import __all__ as hpHelp
+from . import curieWeiss
+from .constants import supportedInstruments
 
 
 def initInstruments(inGui=False):
@@ -102,3 +98,55 @@ def initInstruments(inGui=False):
         hpHelp.reconnectInstructions(inGui)
 
         return instruments
+
+
+def HallPy_Teach(btn=None):
+    if btn is None:
+        btn = {}
+    clear_output()
+    instruments = initInstruments(inGui=True)
+
+    def handle_pickExpSubmit(submitBtnAfterClick=None):
+
+        clear_output()
+        pickExpDropdown.disabled = True
+        submitBtnAfterClick.icon = "spinner"
+        submitBtnAfterClick.disabled = True
+        exp = pickExpDropdown.value
+
+        try:
+            if exp == 'cw':
+                # Add serial number handling later
+                curieWeiss.setup(instruments, inGui=True)
+        except:
+            pickExpDropdown.close()
+            submitBtn.close()
+            restartSetupBtn = widgets.Button(
+                description="Restart Setup",
+                icon="play"
+            )
+            restartSetupBtn.on_click(HallPy_Teach)
+
+            display(widgets.VBox([restartSetupBtn]))
+
+    expChoices = [
+        # To Add Hall Effect Later
+        # ("Hall Effect Lab", "he"),
+        ("Curie Weiss Lab", "cw")
+    ]
+
+    print(" ")
+    print("Choose experiment to perform")
+
+    pickExpDropdown = widgets.Dropdown(
+        options=expChoices,
+        disabled=False
+    )
+    submitBtn = widgets.Button(
+        description="Setup Experiment",
+        icon="flask"
+    )
+    submitBtn.on_click(handle_pickExpSubmit)
+    widgetsToDisplay = [pickExpDropdown, submitBtn]
+
+    display(widgets.VBox(widgetsToDisplay))
