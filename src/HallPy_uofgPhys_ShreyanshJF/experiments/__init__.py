@@ -68,10 +68,9 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                 if "config" in instNeeded.keys():
                     if len(instNeeded["config"]) > 0:
                         instNeededObj["config"] = instNeeded["config"]
-                expInstruments[instNeeded["var"]] = instNeededObj
 
                 if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
-                    expInstruments[instNeeded["var"]]["res"] = sortArrByKey(instruments, "type", instType)[0]
+                    instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                     print("\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used for "
                           + instNeededObj["purpose"] + " measurement. \x1b[m")
@@ -106,7 +105,8 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                             print(" ")
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
-                        expInstruments[instNeededObj["var"]]["res"] = foundInsts[0]
+                        instNeededObj["res"] = foundInsts[0]
+
                 if "config" in instNeeded.keys():
                     for confLine in instNeededObj["config"]:
                         try:
@@ -114,15 +114,16 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                             time.sleep(0.2)
                         except VisaIOError:
                             print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
-                                  + instNeededObj["purpose"] + " measurement. ")
+                                  + instNeededObj["purpose"] + " measurement. \x1b;m")
                             print("Config in question: '" + confLine + "'.")
                             print("Please check experiment config lines.")
                             raise
                         except:
                             print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
-                                  + instNeededObj["purpose"] + " measurement. ")
+                                  + instNeededObj["purpose"] + " measurement. \x1b;m")
                             print("Config in question: '" + confLine + "'.")
                             print("Please check experiment config lines.")
                             raise
+                expInstruments[instNeeded["var"]] = instNeededObj
 
     return expInstruments
