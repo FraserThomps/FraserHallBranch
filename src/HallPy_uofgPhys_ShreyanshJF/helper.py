@@ -56,22 +56,4 @@ def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False)
               + instType + ". \x1b[m")
 
 
-def inJupyter():
-    try:
-        cfg = get_ipython().config
-        if cfg['IPKernelApp']['parent_appname'] == 'ipython-notebook':
-            return True
-        else:
-            return False
-    except NameError:
-        return False
-
-
-def printInTerminal(string):
-    if inJupyter():
-        print(string, file=open('/dev/stdout', 'w'))
-    else:
-        print(string)
-
-
-__all__ = [reconnectInstructions, sortArrByKey, inJupyter]
+__all__ = [reconnectInstructions, sortArrByKey]

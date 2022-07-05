@@ -28,7 +28,7 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from .experiments import curieWeiss
+from .experiments import curieWeiss, getAndSetupExpInsts
 from .constants import supportedInstruments
 from .helper import reconnectInstructions, getInstTypeCount
 
@@ -113,14 +113,42 @@ def HallPy_Teach(btn=None):
     submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
     onStartWidgets = [pickExpDropdown, submitBtn]
 
+    restartSetupBtn = widgets.Button(
+        description="Restart Setup",
+        icon="play",
+        disabled=True
+    )
+
     print(" ")
     print("Choose experiment to perform")
     display(widgets.VBox(onStartWidgets))
 
-    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts):
-        # DO NEXT
-        print('TO DO')
-        print(expSetupFunc, expReq, availableInsts)
+    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName):
+
+        expInstruments = {}
+        try:
+            expInstruments = curieWeiss.setup(instruments=availableInsts, inGui=True)
+            print("TO-DO")
+            print("  - Do experiment guide in GUI or Manual (decided on whats best)")
+        except Exception as errMsg:
+            errMsg = str(errMsg).lower()
+            if "missing serial" in errMsg:
+                print('TO-DO')
+                print('  - GET SERIALS FROM USER')
+            elif "connected" in errMsg:
+                clear_output()
+                print("\x1b[;41m Required instruments are either not connected or cannot be contacted \x1b[m")
+                print("Please connect / reconnect the required instruments from the list below")
+                print("Instruments required for", expName)
+                for reqInstType in expReq.keys():
+                    for inst in expReq[reqInstType]:
+                        print("  -", reqInstType, "for", inst['purpose'], "measurement")
+                print('')
+                reconnectInstructions(inGui=True)
+                restartSetupBtn.on_click(HallPy_Teach)
+                display(widgets.VBox([restartSetupBtn]))
+            else:
+                raise
 
     def handle_pickExpSubmit(submitBtnAfterClick=None):
 
@@ -129,9 +157,12 @@ def HallPy_Teach(btn=None):
         submitBtnAfterClick.icon = "spinner"
         submitBtnAfterClick.disabled = True
         exp = pickExpDropdown.value
+        expName = pickExpDropdown.label
+
         try:
             if exp == 'cw':
                 assignInstsAndSetupExp(
+                    expName=expName,
                     expSetupFunc=curieWeiss.setup,
                     expReq=curieWeiss.requiredEquipment,
                     availableInsts=instruments
@@ -139,12 +170,7 @@ def HallPy_Teach(btn=None):
         except:
             pickExpDropdown.close()
             submitBtn.close()
-            restartSetupBtn = widgets.Button(
-                description="Restart Setup",
-                icon="play"
-            )
             restartSetupBtn.on_click(HallPy_Teach)
-
             display(widgets.VBox([restartSetupBtn]))
 
     submitBtn.on_click(handle_pickExpSubmit)

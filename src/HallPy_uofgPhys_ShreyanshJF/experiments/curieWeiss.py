@@ -36,7 +36,7 @@ def setup(instruments=None, lcr=0, mm=0, inGui=False):
         print("   2 | data = placeHolderExperimentFunction(insts)")
     else:
         print("   1 | cwInsts = hp.curieWeiss.setup(instruments)")
-        print("   2 | data = placeHolderExperimentFunction(insts)")
+        print("   2 | data = placeHolderExperimentFunction(cwInsts)")
     print(' ')
     print("\x1b[;43m NOTE : If any instruments are disconnected or turned off after     \x1b[m")
     print("\x1b[;43m        this point you will have to restart and reconnect them      \x1b[m")
