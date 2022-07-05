@@ -27,8 +27,8 @@ import time
 
 from pyvisa import VisaIOError
 
-from src.HallPy_uofgPhys_ShreyanshJF import reconnectInstructions, getInstTypeCount
-from src.HallPy_uofgPhys_ShreyanshJF.helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
+from ..helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
+from ..helper import reconnectInstructions, getInstTypeCount
 
 
 def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
