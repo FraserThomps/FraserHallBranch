@@ -45,7 +45,7 @@ def _requiredInstrumentNotFound(instType, inGui=False):
 
 def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
     instTypeCount = getInstTypeCount(instruments)
-    print("\x1b[;41m Only " + str(instTypeCount(instType)) + " " + instType + "(s) found. \x1b[m")
+    print("\x1b[;41m Only " + str(instTypeCount[instType]) + " " + instType + "(s) found. \x1b[m")
     print(str(len(requiredEquipment[instType])) + " are required for this experiment.")
     print("Please plug the required number of " + instType + "(s) to the PC via USB. ")
     if inGui:
