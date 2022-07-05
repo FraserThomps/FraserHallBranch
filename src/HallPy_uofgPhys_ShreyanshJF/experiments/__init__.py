@@ -107,7 +107,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
                         expInstruments[instNeeded["var"]]["res"] = foundInsts[0]
-                if "config" in instNeeded["config"]:
+                if "config" in instNeeded.keys():
                     for confLine in instNeeded["config"]:
                         try:
                             instNeeded["res"].write(confLine)
