@@ -71,6 +71,8 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
 
                 if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
                     instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]
+                    print(instNeededObj['purpose'], instNeededObj['type'])
+                    print(instNeededObj["res"])
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                     print("\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used for "
                           + instNeededObj["purpose"] + " measurement. \x1b[m")
@@ -106,6 +108,8 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
                         instNeededObj["res"] = foundInsts[0]
+                        print(instNeededObj['purpose'], instNeededObj['type'])
+                        print(instNeededObj["res"])
 
                 if "config" in instNeeded.keys():
                     for confLine in instNeededObj["config"]:
