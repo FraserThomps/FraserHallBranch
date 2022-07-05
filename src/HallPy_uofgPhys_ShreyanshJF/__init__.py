@@ -167,10 +167,10 @@ def HallPy_Teach(btn=None):
                     expReq=curieWeiss.requiredEquipment,
                     availableInsts=instruments
                 )
-        except:
+        except Exception as errMsg:
             restartSetupBtn.on_click(HallPy_Teach)
             restartSetupBtn.disabled = False
-            print('Last except')
+            print(errMsg)
             display(widgets.VBox([restartSetupBtn]))
 
     submitBtn.on_click(handle_pickExpSubmit)
