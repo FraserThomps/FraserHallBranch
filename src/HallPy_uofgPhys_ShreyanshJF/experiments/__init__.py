@@ -70,7 +70,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                         instNeededObj["config"] = instNeeded["config"]
 
                 if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
-                    instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]
+                    instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]['inst']
                     print(instNeededObj['purpose'], instNeededObj['type'])
                     print(instNeededObj["res"])
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
@@ -107,7 +107,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                             print(" ")
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
-                        instNeededObj["res"] = foundInsts[0]
+                        instNeededObj["res"] = foundInsts[0]['inst']
                         print(instNeededObj['purpose'], instNeededObj['type'])
                         print(instNeededObj["res"])
 
