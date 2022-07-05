@@ -1,4 +1,5 @@
-from .helper import reconnectInstructions, getAndSetupExpInsts
+from ..helper import reconnectInstructions
+from .__init__ import getAndSetupExpInsts
 
 requiredEquipment = {
     "LCR Meter": [

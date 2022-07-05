@@ -19,9 +19,7 @@ found on the online at https://hallPy.fofandi.dev.
 
 Submodules
 ----------
-+ constants.py
-+ helper.py
-+ curieWeiss.py
++ experiments/
 
 """
 
@@ -30,7 +28,7 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from . import curieWeiss
+from .experiments import curieWeiss
 from .constants import supportedInstruments
 from .helper import reconnectInstructions, getInstTypeCount
 
