@@ -56,8 +56,8 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
             raise Exception("No " + instType + " connected")
         elif instTypeCount[instType] < len(requiredEquipment[instType]):
             _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui)
-            raise Exception("Not enough " + instType + "(s) connected.", str(len(requiredEquipment[instType])),
-                            " required.")
+            raise Exception("Not enough " + instType + "(s) connected. "
+                            + str(len(requiredEquipment[instType])) + "required.")
         else:
             for instNeeded in requiredEquipment[instType]:
                 instNeededObj = {

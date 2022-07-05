@@ -137,8 +137,8 @@ def HallPy_Teach(btn=None):
                 print('TO-DO')
                 print('  - GET SERIALS FROM USER')
             elif "connected" in errMsg:
-                print("\x1b[;41m Required instruments are either not connected or cannot be contacted \x1b[m")
-                print("Please connect / reconnect the required instruments from the list below")
+                print('')
+                print("Please connect / reconnect ALL of the required instruments from the list below")
                 print("Instruments required for", expName)
                 for reqInstType in expReq.keys():
                     for inst in expReq[reqInstType]:

@@ -46,14 +46,15 @@ def _requiredInstrumentNotFound(instType, inGui=False):
 def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
     instTypeCount = getInstTypeCount(instruments)
     print("\x1b[;41m Only " + str(instTypeCount[instType]) + " " + instType + "(s) found. \x1b[m")
-    print(str(len(requiredEquipment[instType])) + " are required for this experiment.")
-    print("Please plug the required number of " + instType + "(s) to the PC via USB. ")
-    if inGui:
-        print("\x1b[;43m NOTE : You will have to click the `Restart Setup` button or rerun the `HallPy_Teach()` "
-              "function after plugging in the " + instType + ". \x1b[m")
+    if len(requiredEquipment[instType]) == 1:
+        print(str(len(requiredEquipment[instType])), instType, "is required for this experiment.")
     else:
+        print(str(len(requiredEquipment[instType])), instType + "(s) are required for this experiment.")
+    print('')
+    print("Please plug the required number of " + instType + "(s) to the PC via USB. ")
+    if not inGui:
         print("\x1b[;43m NOTE : You will have to rerun the `initInstruments()` function after plugging in the "
-              + instType + ". \x1b[m")
+              + instType + "(s). \x1b[m")
 
 
 __all__ = [reconnectInstructions, sortArrByKey]
