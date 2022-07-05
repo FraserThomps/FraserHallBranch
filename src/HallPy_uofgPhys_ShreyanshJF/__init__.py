@@ -126,7 +126,6 @@ def HallPy_Teach(btn=None):
     def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName):
 
         expInstruments = {}
-        clear_output()
         try:
             expInstruments = curieWeiss.setup(instruments=availableInsts, inGui=True)
             print('')
@@ -155,9 +154,8 @@ def HallPy_Teach(btn=None):
     def handle_pickExpSubmit(submitBtnAfterClick=None):
 
         clear_output()
-        pickExpDropdown.disabled = True
-        submitBtnAfterClick.icon = "spinner"
-        submitBtnAfterClick.disabled = True
+        pickExpDropdown.close = True
+        submitBtnAfterClick.close = True
         exp = pickExpDropdown.value
         expName = pickExpDropdown.label
 
@@ -170,9 +168,9 @@ def HallPy_Teach(btn=None):
                     availableInsts=instruments
                 )
         except:
-            pickExpDropdown.close()
-            submitBtn.close()
             restartSetupBtn.on_click(HallPy_Teach)
+            restartSetupBtn.disabled = False
+            print('Last except')
             display(widgets.VBox([restartSetupBtn]))
 
     submitBtn.on_click(handle_pickExpSubmit)
