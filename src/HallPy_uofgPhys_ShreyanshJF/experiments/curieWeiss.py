@@ -32,11 +32,11 @@ def setup(instruments=None, lcr=0, mm=0, inGui=False):
     print("\x1b[;42m Instruments ready to use for Curie Weiss experiment \x1b[m")
     print("Proceed as shown:")
     if inGui:
-        print("   1 | insts = HallPy_Teach()")
-        print("   2 | data = placeHolderExperimentFunction(insts)")
+        print("   1 | cwInstruments = HallPy_Teach()")
+        print("   2 | data = placeHolderExperimentFunction(cwInstruments)")
     else:
-        print("   1 | cwInsts = hp.curieWeiss.setup(instruments)")
-        print("   2 | data = placeHolderExperimentFunction(cwInsts)")
+        print("   1 | cwInstruments = hp.curieWeiss.setup(instruments)")
+        print("   2 | data = placeHolderExperimentFunction(cwInstruments)")
     print(' ')
     print("\x1b[;43m NOTE : If any instruments are disconnected or turned off after     \x1b[m")
     print("\x1b[;43m        this point you will have to restart and reconnect them      \x1b[m")

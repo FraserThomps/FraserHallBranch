@@ -126,8 +126,10 @@ def HallPy_Teach(btn=None):
     def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName):
 
         expInstruments = {}
+        clear_output()
         try:
             expInstruments = curieWeiss.setup(instruments=availableInsts, inGui=True)
+            print('')
             print("TO-DO")
             print("  - Do experiment guide in GUI or Manual (decided on whats best)")
         except Exception as errMsg:
@@ -136,7 +138,6 @@ def HallPy_Teach(btn=None):
                 print('TO-DO')
                 print('  - GET SERIALS FROM USER')
             elif "connected" in errMsg:
-                clear_output()
                 print("\x1b[;41m Required instruments are either not connected or cannot be contacted \x1b[m")
                 print("Please connect / reconnect the required instruments from the list below")
                 print("Instruments required for", expName)
@@ -145,6 +146,7 @@ def HallPy_Teach(btn=None):
                         print("  -", reqInstType, "for", inst['purpose'], "measurement")
                 print('')
                 reconnectInstructions(inGui=True)
+                restartSetupBtn.disabled = False
                 restartSetupBtn.on_click(HallPy_Teach)
                 display(widgets.VBox([restartSetupBtn]))
             else:
