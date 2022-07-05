@@ -134,12 +134,11 @@ def HallPy_Teach(btn=None):
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
             if "missing serial" in errMsg:
-                print('TO-DO')
-                print('  - GET SERIALS FROM USER')
+                print("TO-DO")
+                print("  - GET SERIALS FROM USER")
             elif "connected" in errMsg:
                 print('')
-                print("Please connect / reconnect ALL of the required instruments from the list below")
-                print("Instruments required for", expName)
+                print("All instruments required for", expName)
                 for reqInstType in expReq.keys():
                     for inst in expReq[reqInstType]:
                         print("  -", reqInstType, "for", inst['purpose'], "measurement")

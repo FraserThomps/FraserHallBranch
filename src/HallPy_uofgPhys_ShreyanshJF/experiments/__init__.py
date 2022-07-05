@@ -124,13 +124,13 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                             print("Please check experiment config lines.")
                             raise
                 expInstruments[instNeeded["var"]] = instNeededObj
-            for instVar in expInstruments.keys():
-                if instVar in serials.keys():
-                    print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
-                          "measurement. (SN:", serials[instVar] + ")")
-                else:
-                    print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
-                          "measurement.")
-            print(' ')
+    for instVar in expInstruments.keys():
+        if instVar in serials.keys():
+            print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
+                  "measurement. (SN:", serials[instVar] + ")")
+        else:
+            print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
+                  "measurement.")
+    print(' ')
 
     return expInstruments
