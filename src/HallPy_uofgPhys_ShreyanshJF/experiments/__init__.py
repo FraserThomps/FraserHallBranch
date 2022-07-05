@@ -106,21 +106,21 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                             print(" ")
                         raise Exception("Multiple instruments with same serial number found.")
                     else:
-                        expInstruments[instNeeded["var"]]["res"] = foundInsts[0]
+                        expInstruments[instNeededObj["var"]]["res"] = foundInsts[0]
                 if "config" in instNeeded.keys():
-                    for confLine in instNeeded["config"]:
+                    for confLine in instNeededObj["config"]:
                         try:
-                            instNeeded["res"].write(confLine)
+                            instNeededObj["res"].write(confLine)
                             time.sleep(0.2)
                         except VisaIOError:
-                            print("\x1b[;43m Error occurred while configuring " + instNeeded["type"] + " for "
-                                  + instNeeded["purpose"] + " measurement. ")
+                            print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
+                                  + instNeededObj["purpose"] + " measurement. ")
                             print("Config in question: '" + confLine + "'.")
                             print("Please check experiment config lines.")
                             raise
                         except:
-                            print("\x1b[;43m Error occurred while configuring " + instNeeded["type"] + " for "
-                                  + instNeeded["purpose"] + " measurement. ")
+                            print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
+                                  + instNeededObj["purpose"] + " measurement. ")
                             print("Config in question: '" + confLine + "'.")
                             print("Please check experiment config lines.")
                             raise
