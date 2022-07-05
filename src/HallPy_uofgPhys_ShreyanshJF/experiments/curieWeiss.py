@@ -35,7 +35,7 @@ def setup(instruments=None, lcr=0, mm=0, inGui=False):
         print("   1 | insts = HallPy_Teach()")
         print("   2 | data = placeHolderExperimentFunction(insts)")
     else:
-        print("   1 | cwInsts = hp.curieWeiss.setup(instruments, lcr='XXXXXXXXX', mm='XXXXXXX')")
+        print("   1 | cwInsts = hp.curieWeiss.setup(instruments)")
         print("   2 | data = placeHolderExperimentFunction(insts)")
     print(' ')
     print("\x1b[;43m NOTE : If any instruments are disconnected or turned off after     \x1b[m")
@@ -43,6 +43,7 @@ def setup(instruments=None, lcr=0, mm=0, inGui=False):
     if inGui:
         print("\x1b[;43m        to the PC and rerun the `HallPy_Tech()` function            \x1b[m")
     else:
-        print("\x1b[;43m        to the PC and rerun 'initInstruments()' and setupCW()       \x1b[m")
+        print("\x1b[;43m        to the PC and rerun 'hp.initInstruments()' and              \x1b[m")
+        print("\x1b[;43m        hp.curieWeiss.setup()                                       \x1b[m")
 
     return foundReqInstruments
