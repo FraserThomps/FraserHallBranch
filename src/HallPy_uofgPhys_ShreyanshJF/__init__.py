@@ -196,7 +196,7 @@ def HallPy_Teach(btn=None):
                 serials[dropdownName] = serialDropdowns[dropdownName].value
 
             for singleSerial in serials.values():
-                if serials.values().count(singleSerial) > 1:
+                if list(serials.values()).count(singleSerial) > 1:
                     print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
                 else:
                     assignInstsAndSetupExp(
@@ -209,8 +209,8 @@ def HallPy_Teach(btn=None):
 
         submitBtn.description = "Assign Instruments"
         submitBtn.icon = "tachometer"
-        display(submitBtn)
         submitBtn.on_click(handle_submitSerials)
+        display(submitBtn)
 
     def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials={}):
 
