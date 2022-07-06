@@ -5,12 +5,10 @@ HallPy_Teach: A Python package to aid physics students in performing lab activit
 Documentation is available in the docstrings and online at:
 https://hallPy.fofandi.dev.
 
-Description
------------
-HallPy_Teach uses the pyvisa package to communicate with lab equipment. It is intended to be used as an CAI (Computer
-Assisted Instruction) library to let students get setup with labs in a straight forward way. It exposes functions which
-can be used to develop any type of computer operated lab if the lab equipment operates on the VISA specifications
-and is supported by pyvisa.
+Description ----------- HallPy_Teach uses the pyvisa package to communicate with lab equipment. It is intended to be
+used as an CAI (Computer Assisted Instruction) library to let students get setup with labs in a straight forward way.
+It exposes functions which can be used to develop any type of computer operated lab if the lab equipment operates on
+the VISA specifications and is supported by pyvisa.
 
 Notes
 -----
@@ -22,6 +20,7 @@ Submodules
 + experiments/
 
 """
+import re
 
 import pyvisa
 from IPython.core.display import display
@@ -29,64 +28,103 @@ from IPython.display import clear_output
 import ipywidgets as widgets
 
 from .experiments import curieWeiss, getAndSetupExpInsts
-from .constants import supportedInstruments
-from .helper import reconnectInstructions, getInstTypeCount
+from .constants import supportedInstruments, serialRegex
+from .helper import reconnectInstructions, getInstTypeCount, sortArrByKey
 
 
 def initInstruments(inGui=False):
     """Initializing and recognising connected equipment.
 
-    Function does the setup for any of the experiments which use this library. It recognises the connected instruments
-    and provides the instruments in the form the `inst` object. It also classifies by their functions depending on
-    their manufacturer & model number found by querying the instrument with the pyvisa library
-    (`instObj.query("*IDN?")`). The list of supported instruments is in the constants' module.
+    Function does the setup for any of the experiments which use this HallPy_Teach. It recognises the connected
+    instruments and provides the instruments in the form of the `inst` object. It also classifies the equipment by their
+    uses depending on the manufacturer & model. Equipment is queried using the pyvisa library (`inst.query("*IDN?")`).
+
+    The list of supported instruments is in the constants' module (mentioned in the See Also section).
 
     See Also
     --------
-    constants.supportedEquipment : Used to classify instrument
+    + constants.supportedEquipment : Used to classify instrument
+    + HallPy_Teach() : Used to use library with GUI in Jupyter Notebook / Lab
 
     Returns
     -------
+    Array of objects containing information about the connected instruments
+    Example of 2 found instruments:
+    [
+        {
+            'inst': USBInstrument, #PyVisa Object: to be used to communicate with instrument eg.:
+            multimeter['inst'].query('*IDN?')
 
+            'name': 'KEITHLEY INSTRUMENTS INC.,MODEL 2110,8014885,02.03-03-20', #String: Name of instrument from
+            inst.query('*IDN?')
+
+            'resName': 'USB0::0x5E6::0x2110::8014885::INSTR', #String: Name of instrument USB resource
+
+            'type': 'Multimeter' #Strign: Type of instrument. other types: 'LCR Meter', 'Power Supply'
+        },
+        {
+            'inst': SerialInstrument,                     #PyVisa Object
+
+            'name': 'B&K Precision ,891,468L20200...',    #String
+
+            'resName': 'ASLR::INSTR',                     #String
+
+            'type': 'LCR Meter'                           #String
+        }
+    ]
     """
     rm = pyvisa.ResourceManager()
-    res = rm.list_resources()
+    resList = rm.list_resources()
     instruments = []
 
-    for i in res:
+    # Looping through all connected USB devices to look for usable instruments
+    for res in resList:
         try:
-            # Creating the inst object to be used in the experiments functions (heSetup(), cwSetup(), etc.)
-            instResource = rm.open_resource(i)
+            # Initiating communication with instrument
+            instResource = rm.open_resource(res)
+
+            # Getting instrument name - if successful, it is supported by PyVisa and is an Instrument not just
+            # another USB device
             name = instResource.query("*IDN?")
+
+            # Creating the instrument object to be used in the rest of the library
             inst = {
-                'inst': instResource,
-                'name': name,
-                'resName': i
+                "inst": instResource,
+                "name": name,
+                "resName": res
             }
 
+            # Defining instrument type (see supported instruments in hp.constants.supportedInstruments)
             for instrumentType in supportedInstruments.keys():
                 for supportedInstrumentName in supportedInstruments[instrumentType]:
                     if supportedInstrumentName in name:
                         inst['type'] = instrumentType
 
+            # Defining instrument type as Unknown if instrument cannot be classified
             if len(inst.keys()) == 3:
-                inst['type'] = 'Unknown'
+                inst["type"] = "Unknown"
 
+            # Adding instrument to the list of all instruments usable by HallPy_Teach_uofgPhys
             instruments.append(inst)
+
+        # Error indicates that the USB device is incompatible with PyVisa
         except pyvisa.VisaIOError:
             pass
         finally:
             pass
 
+    # Getting instrument count by instrument type
     instTypeCount = getInstTypeCount(instruments)
 
+    # Raising error if no instruments are connected.
     if all(instrumentCount == 0 for instrumentCount in instTypeCount.values()):
         print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
         print('')
         reconnectInstructions(inGui)
         raise Exception("No instruments could be recognised / contacted")
     else:
-        countStr = ''
+        # Showing connected instruments to user
+        countStr = ""
         for instrumentType in instTypeCount.keys():
             if instTypeCount[instrumentType] != 0:
                 countStr = countStr + str(instTypeCount[instrumentType]) + " " + instrumentType + "(s)   "
@@ -95,6 +133,7 @@ def initInstruments(inGui=False):
         print('')
         reconnectInstructions(inGui)
 
+        # Returning array of instruments : See documentation at the start of the function.
         return instruments
 
 
@@ -121,21 +160,80 @@ def HallPy_Teach(btn=None):
 
     print(" ")
     print("Choose experiment to perform")
+    # noinspection PyTypeChecker
     display(widgets.VBox(onStartWidgets))
 
-    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName):
+    def getUserSerialAssignment(expSetupFunc, expReq, availableInsts, expName):
+        serials = {}
+        for instType in expReq.keys():
+            if len(expReq[instType]) > 1:
+                print("Assign", instType + "(s)")
+                serialDropdowns = []
+                availableSerials = []
+                for inst in sortArrByKey(availableInsts, "type", instType):
+                    regex = ""
+                    for instPartialName in serialRegex.keys():
+                        if instPartialName in inst["name"]:
+                            regex = serialRegex[instPartialName]
+                    if regex == "":
+                        raise Exception("Regular expression not defined for given instrument")
+                    serial = re.search(regex, inst["name"]).group()
+                    availableSerials.append((serial, serial))
+
+                for neededInst in expReq[instType]:
+                    instSerialDropdown = widgets.Dropdown(
+                        description=neededInst["purpose"],
+                        label=neededInst["var"],
+                        options=availableSerials
+                    )
+                    serialDropdowns.append(instSerialDropdown)
+
+                # noinspection PyTypeChecker
+                display(widgets.VBox(serialDropdowns))
+
+        def handle_submitSerials(btn):
+            for dropdown in serialDropdowns:
+                serials[dropdown.label] = dropdown.value
+
+            for singleSerial in serials.values():
+                if serials.values().count(singleSerial) > 1:
+                    print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
+                else:
+                    assignInstsAndSetupExp(
+                        expSetupFunc=expSetupFunc,
+                        expReq=expReq,
+                        availableInsts=availableInsts,
+                        expName=expName,
+                        pickedSerials=serials
+                    )
+
+        submitBtn.description = "Assign Instruments"
+        submitBtn.icon = "tachometer"
+        display(submitBtn)
+        submitBtn.on_click(handle_submitSerials)
+
+    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials={}):
 
         expInstruments = {}
         try:
-            expInstruments = curieWeiss.setup(instruments=availableInsts, inGui=True)
+            if len(pickedSerials.keys()) != 0:
+                expInstruments = expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
+            else:
+                if len(pickedSerials.keys()) != 0:
+                    expInstruments = expSetupFunc(instruments=availableInsts, inGui=True)
             print('')
             print("TO-DO")
             print("  - Do experiment guide in GUI or Manual (decided on whats best)")
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
             if "missing serial" in errMsg:
-                print("TO-DO")
-                print("  - GET SERIALS FROM USER")
+                clear_output()
+                getUserSerialAssignment(
+                    expSetupFunc=expSetupFunc,
+                    expReq=expReq,
+                    availableInsts=availableInsts,
+                    expName=expName
+                )
             elif "connected" in errMsg:
                 print('')
                 print("All instruments required for", expName)
@@ -146,6 +244,7 @@ def HallPy_Teach(btn=None):
                 reconnectInstructions(inGui=True)
                 restartSetupBtn.disabled = False
                 restartSetupBtn.on_click(HallPy_Teach)
+                # noinspection PyTypeChecker
                 display(widgets.VBox([restartSetupBtn]))
             else:
                 raise
@@ -170,6 +269,7 @@ def HallPy_Teach(btn=None):
             restartSetupBtn.on_click(HallPy_Teach)
             restartSetupBtn.disabled = False
             print(errMsg)
+            # noinspection PyTypeChecker
             display(widgets.VBox([restartSetupBtn]))
 
     submitBtn.on_click(handle_pickExpSubmit)

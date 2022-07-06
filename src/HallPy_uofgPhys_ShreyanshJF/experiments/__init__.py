@@ -32,6 +32,11 @@ from ..helper import reconnectInstructions, getInstTypeCount
 
 
 def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
+    """Picking out and setting up connected equipment specific to the lab being performed.
+
+
+
+    """
     if serials is None:
         serials = {}
     if requiredEquipment is None:
