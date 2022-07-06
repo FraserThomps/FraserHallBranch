@@ -191,7 +191,7 @@ def HallPy_Teach(btn=None):
                 # noinspection PyTypeChecker
                 display(widgets.VBox(list(serialDropdowns.values())))
 
-        def handle_submitSerials(btn):
+        def handle_submitSerials(assignSerialsButton):
             for dropdownName in serialDropdowns.keys():
                 serials[dropdownName] = serialDropdowns[dropdownName].value
 
@@ -199,6 +199,7 @@ def HallPy_Teach(btn=None):
                 if list(serials.values()).count(singleSerial) > 1:
                     print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
                 else:
+                    assignSerialsButton.close()
                     assignInstsAndSetupExp(
                         expSetupFunc=expSetupFunc,
                         expReq=expReq,
@@ -207,9 +208,11 @@ def HallPy_Teach(btn=None):
                         pickedSerials=serials
                     )
 
-        submitBtn.description = "Assign Instruments"
-        submitBtn.icon = "tachometer"
-        submitBtn.on_click(handle_submitSerials)
+        assignSerialsBtn = widgets.Button(
+            description="Assign Instruments",
+            icon="tachometer"
+        )
+        assignSerialsBtn.on_click(handle_submitSerials)
         display(submitBtn)
 
     def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials={}):
