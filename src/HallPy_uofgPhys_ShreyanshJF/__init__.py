@@ -146,6 +146,7 @@ def HallPy_Teach(btn=None):
     expChoices = [
         # To Add Hall Effect Later
         # ("Hall Effect Lab", "he"),
+        ("Test Lab", "test"),
         ("Curie Weiss Lab", "cw")
     ]
     pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
