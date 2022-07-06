@@ -79,7 +79,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                     if not inGui:
                         print("\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used \x1b[m")
-                        print("\x1b[;43m for " + instNeededObj["purpose"] + " measurement.                       \x1b[m")
+                        print("\x1b[;43m for " + instNeededObj["purpose"] + " measurement. \x1b[m")
                         print("Required variable: '" + instNeeded["var"] + "'")
                     raise Exception("Missing serial numbers for " + instType + " assignment.")
                 else:

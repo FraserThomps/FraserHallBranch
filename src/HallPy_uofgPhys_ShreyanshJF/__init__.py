@@ -213,7 +213,7 @@ def HallPy_Teach(btn=None):
             icon="tachometer"
         )
         assignSerialsBtn.on_click(handle_submitSerials)
-        display(submitBtn)
+        display(assignSerialsBtn)
 
     def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials={}):
 
