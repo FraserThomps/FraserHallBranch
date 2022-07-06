@@ -27,7 +27,7 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from .experiments import curieWeiss, getAndSetupExpInsts
+from .experiments import curieWeiss, getAndSetupExpInsts, test
 from .constants import supportedInstruments, serialRegex
 from .helper import reconnectInstructions, getInstTypeCount, sortArrByKey
 
@@ -259,13 +259,21 @@ def HallPy_Teach(btn=None):
         expName = pickExpDropdown.label
 
         try:
-            if exp == 'cw':
+            if exp == "cw":
                 assignInstsAndSetupExp(
                     expName=expName,
                     expSetupFunc=curieWeiss.setup,
                     expReq=curieWeiss.requiredEquipment,
                     availableInsts=instruments
                 )
+            elif exp == "test":
+                if exp == 'cw':
+                    assignInstsAndSetupExp(
+                        expName=expName,
+                        expSetupFunc=test.setup,
+                        expReq=test.requiredEquipment,
+                        availableInsts=instruments
+                    )
         except Exception as errMsg:
             restartSetupBtn.on_click(HallPy_Teach)
             restartSetupBtn.disabled = False
