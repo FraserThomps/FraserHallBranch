@@ -217,18 +217,14 @@ def HallPy_Teach(btn=None):
 
         expInstruments = {}
         try:
-            if len(pickedSerials.keys()) != 0:
+            if len(pickedSerials.keys()) > 0:
                 expInstruments = expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
             else:
-                if len(pickedSerials.keys()) != 0:
-                    expInstruments = expSetupFunc(instruments=availableInsts, inGui=True)
-            print('')
-            print("TO-DO")
-            print("  - Do experiment guide in GUI or Manual (decided on whats best)")
+                expInstruments = expSetupFunc(instruments=availableInsts, inGui=True)
+
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
             if "missing serial" in errMsg:
-                clear_output()
                 getUserSerialAssignment(
                     expSetupFunc=expSetupFunc,
                     expReq=expReq,
@@ -267,13 +263,12 @@ def HallPy_Teach(btn=None):
                     availableInsts=instruments
                 )
             elif exp == "test":
-                if exp == 'cw':
-                    assignInstsAndSetupExp(
-                        expName=expName,
-                        expSetupFunc=test.setup,
-                        expReq=test.requiredEquipment,
-                        availableInsts=instruments
-                    )
+                assignInstsAndSetupExp(
+                    expName=expName,
+                    expSetupFunc=test.setup,
+                    expReq=test.requiredEquipment,
+                    availableInsts=instruments
+                )
         except Exception as errMsg:
             restartSetupBtn.on_click(HallPy_Teach)
             restartSetupBtn.disabled = False
