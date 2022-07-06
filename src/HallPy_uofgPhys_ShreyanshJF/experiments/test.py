@@ -15,15 +15,15 @@ requiredEquipment = {
 }
 
 
-def setup(instruments=None, lcr=0, mm=0, inGui=False):
+def setup(instruments=None, ps1=0, ps2=0, inGui=False):
     if instruments is None:
         instruments = []
 
     serials = {}
-    if lcr != 0:
-        serials["lcr"] = str(lcr)
-    if mm != 0:
-        serials["mm"] = str(mm)
+    if ps1 != 0:
+        serials["ps1"] = str(ps1)
+    if ps2 != 0:
+        serials["ps2"] = str(ps2)
 
     if len(instruments) == 0:
         print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
