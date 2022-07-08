@@ -172,6 +172,7 @@ def HallPy_Teach(btn=None):
         serials = {}
         serialDropdownsByType = {}
         for instType in expReq.keys():
+            serialDropdownsByType[instType] = {}
             if len(expReq[instType]) > 1:
                 print("Assign", instType + "(s)")
                 availableSerials = []
@@ -195,7 +196,6 @@ def HallPy_Teach(btn=None):
                 display(widgets.VBox(list(serialDropdownsByType[instType].values())))
 
         def handle_submitSerials(assignSerialsButton):
-            print(serialDropdownsByType)
             for dropdownInstType in serialDropdownsByType.keys():
                 for instNeededVar in serialDropdownsByType[dropdownInstType].keys():
                     serials[instNeededVar] = serialDropdownsByType[dropdownInstType][instNeededVar].value
