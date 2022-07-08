@@ -199,8 +199,7 @@ def HallPy_Teach(btn=None):
             for dropdownInstType in serialDropdownsByType.keys():
                 for instNeededVar in serialDropdownsByType[dropdownInstType].keys():
                     serials[instNeededVar] = serialDropdownsByType[dropdownInstType][instNeededVar].value
-                    print(instNeededVar)
-            
+
             doExecAssignment = True
             for singleSerial in serials.values():
                 if list(serials.values()).count(singleSerial) > 1:
