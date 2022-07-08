@@ -198,6 +198,7 @@ def HallPy_Teach(btn=None):
         def handle_submitSerials(assignSerialsButton):
             for dropdownName in serialDropdowns.keys():
                 serials[dropdownName] = serialDropdowns[dropdownName].value
+                print(dropdownName)
             
             doExecAssignment = True
             for singleSerial in serials.values():
