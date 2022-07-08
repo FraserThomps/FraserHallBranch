@@ -170,10 +170,10 @@ def HallPy_Teach(btn=None):
 
     def getUserSerialAssignment(expSetupFunc, expReq, availableInsts, expName):
         serials = {}
+        serialDropdownsByType = {}
         for instType in expReq.keys():
             if len(expReq[instType]) > 1:
                 print("Assign", instType + "(s)")
-                serialDropdowns = {}
                 availableSerials = []
                 for inst in sortArrByKey(availableInsts, "type", instType):
                     regex = ""
@@ -190,15 +190,16 @@ def HallPy_Teach(btn=None):
                         description=neededInst["purpose"],
                         options=availableSerials
                     )
-                    serialDropdowns[neededInst["var"]] = instSerialDropdown
+                    serialDropdownsByType[instType][neededInst["var"]] = instSerialDropdown
 
                 # noinspection PyTypeChecker
-                display(widgets.VBox(list(serialDropdowns.values())))
+                display(widgets.VBox(list(serialDropdownsByType[instType].values())))
 
         def handle_submitSerials(assignSerialsButton):
-            for dropdownName in serialDropdowns.keys():
-                serials[dropdownName] = serialDropdowns[dropdownName].value
-                print(dropdownName)
+            for dropdownInstType in serialDropdownsByType.keys():
+                for instNeededVar in serialDropdownsByType[dropdownInstType].keys():
+                    serials[instNeededVar] = serialDropdownsByType[dropdownInstType][instNeededVar].value
+                    print(instNeededVar)
             
             doExecAssignment = True
             for singleSerial in serials.values():
