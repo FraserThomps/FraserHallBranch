@@ -191,11 +191,11 @@ def HallPy_Teach(btn=None):
                         options=availableSerials
                     )
                     serialDropdownsByType[instType][neededInst["var"]] = instSerialDropdown
-                print(serialDropdownsByType)
                 # noinspection PyTypeChecker
                 display(widgets.VBox(list(serialDropdownsByType[instType].values())))
 
         def handle_submitSerials(assignSerialsButton):
+            print(serialDropdownsByType)
             for dropdownInstType in serialDropdownsByType.keys():
                 for instNeededVar in serialDropdownsByType[dropdownInstType].keys():
                     serials[instNeededVar] = serialDropdownsByType[dropdownInstType][instNeededVar].value
