@@ -143,7 +143,11 @@ def initInstruments(inGui=False):
         return instruments
 
 
-def HallPy_Teach(btn=None):
+def HallPy_Teach(btn=None, expInstruments=None):
+
+    if expInstruments is not None:
+        return expInstruments
+
     if btn is None:
         btn = {}
     clear_output()
@@ -208,13 +212,13 @@ def HallPy_Teach(btn=None):
                     break
             if doExecAssignment:
                 clear_output()
-                return assignInstsAndSetupExp(
-                    expSetupFunc=expSetupFunc,
-                    expReq=expReq,
-                    availableInsts=availableInsts,
-                    expName=expName,
-                    pickedSerials=serials
-                )
+                assignInstsAndSetupExp(
+                        expSetupFunc=expSetupFunc,
+                        expReq=expReq,
+                        availableInsts=availableInsts,
+                        expName=expName,
+                        pickedSerials=serials
+                    )
 
         assignSerialsBtn = widgets.Button(
             description="Assign Instruments",
@@ -227,11 +231,14 @@ def HallPy_Teach(btn=None):
 
         if pickedSerials is None:
             pickedSerials = {}
+
         try:
             if len(pickedSerials.keys()) > 0:
-                return expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
+                expInsts = expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
             else:
-                return expSetupFunc(instruments=availableInsts, inGui=True)
+                expInsts = expSetupFunc(instruments=availableInsts, inGui=True)
+
+            HallPy_Teach(expInstruments=expInsts)
 
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
@@ -267,7 +274,7 @@ def HallPy_Teach(btn=None):
         expName = pickExpDropdown.label
 
         try:
-            return assignInstsAndSetupExp(
+            assignInstsAndSetupExp(
                 expName=expName,
                 expSetupFunc=expSetupFunc,
                 expReq=expReq,
