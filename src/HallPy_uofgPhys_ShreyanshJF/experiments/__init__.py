@@ -63,74 +63,75 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
             _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui)
             raise Exception("Not enough " + instType + "(s) connected. "
                             + str(len(requiredEquipment[instType])) + "required.")
-        else:
-            for instNeeded in requiredEquipment[instType]:
-                instNeededObj = {
-                    "res": {},
-                    "type": instType,
-                    "purpose": instNeeded["purpose"]
-                }
-                if "config" in instNeeded.keys():
-                    if len(instNeeded["config"]) > 0:
-                        instNeededObj["config"] = instNeeded["config"]
 
-                if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
-                    instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]['inst']
-                elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
-                    if not inGui:
-                        print(
-                            "\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used \x1b[m")
-                        print("\x1b[;43m for " + instNeededObj["purpose"] + " measurement. \x1b[m")
-                        print("Required variable: '" + instNeeded["var"] + "'")
-                    raise Exception("Missing serial numbers for " + instType + " assignment.")
+    for instType in requiredEquipment.keys():
+        for instNeeded in requiredEquipment[instType]:
+            instNeededObj = {
+                "res": {},
+                "type": instType,
+                "purpose": instNeeded["purpose"]
+            }
+            if "config" in instNeeded.keys():
+                if len(instNeeded["config"]) > 0:
+                    instNeededObj["config"] = instNeeded["config"]
+
+            if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
+                instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]['inst']
+            elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
+                if not inGui:
+                    print(
+                        "\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used \x1b[m")
+                    print("\x1b[;43m for " + instNeededObj["purpose"] + " measurement. \x1b[m")
+                    print("Required variable: '" + instNeeded["var"] + "'")
+                raise Exception("Missing serial numbers for " + instType + " assignment.")
+            else:
+                serial = serials[instNeeded["var"]]
+                foundInsts = list(filter(lambda instrument: serial in instrument["name"], instruments))
+                if len(foundInsts) == 0:
+                    print("\x1b[;43m  Please use a valid serial number for the " + instType + ". \x1b[m")
+                    print("Serial number entered: " + serial)
+                    print("Found Instruments | " + instType + "(s) : ")
+                    print("Available " + instType + "(s): ")
+                    for inst in sortArrByKey(instruments, "type", instType):
+                        print("   " + inst["name"].replace("\n", " "))
+                        print(" ")
+                    raise Exception("No instruments with given serial number found.")
+                elif len(foundInsts) != 1:
+                    print("\x1b[;43m  Please call a Lab Technician or IT support. \x1b[m")
+                    print("Multiple instruments with same serial number found")
+                    print("Serial number in question: " + serial)
+                    print("Found Instruments | " + instType + "(s) : ")
+                    for inst in foundInsts:
+                        print("   " + inst["name"].replace("\n", " "))
+                        print("USB Resource Name: " + inst["resName"])
+                        print(" ")
+                    print("All connected Instruments: ")
+                    for inst in instruments:
+                        print("   " + inst["name"].replace("\n", " "))
+                        print("USB Resource Name: " + inst["resName"])
+                        print("Type: " + inst["type"])
+                        print(" ")
+                    raise Exception("Multiple instruments with same serial number found.")
                 else:
-                    serial = serials[instNeeded["var"]]
-                    foundInsts = list(filter(lambda instrument: serial in instrument["name"], instruments))
-                    if len(foundInsts) == 0:
-                        print("\x1b[;43m  Please use a valid serial number for the " + instType + ". \x1b[m")
-                        print("Serial number entered: " + serial)
-                        print("Found Instruments | " + instType + "(s) : ")
-                        print("Available " + instType + "(s): ")
-                        for inst in sortArrByKey(instruments, "type", instType):
-                            print("   " + inst["name"].replace("\n", " "))
-                            print(" ")
-                        raise Exception("No instruments with given serial number found.")
-                    elif len(foundInsts) != 1:
-                        print("\x1b[;43m  Please call a Lab Technician or IT support. \x1b[m")
-                        print("Multiple instruments with same serial number found")
-                        print("Serial number in question: " + serial)
-                        print("Found Instruments | " + instType + "(s) : ")
-                        for inst in foundInsts:
-                            print("   " + inst["name"].replace("\n", " "))
-                            print("USB Resource Name: " + inst["resName"])
-                            print(" ")
-                        print("All connected Instruments: ")
-                        for inst in instruments:
-                            print("   " + inst["name"].replace("\n", " "))
-                            print("USB Resource Name: " + inst["resName"])
-                            print("Type: " + inst["type"])
-                            print(" ")
-                        raise Exception("Multiple instruments with same serial number found.")
-                    else:
-                        instNeededObj["res"] = foundInsts[0]['inst']
-                if "config" in instNeeded.keys():
-                    for confLine in instNeededObj["config"]:
-                        try:
-                            instNeededObj["res"].write(confLine)
-                            time.sleep(0.2)
-                        except VisaIOError:
-                            print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
-                                  + instNeededObj["purpose"] + " measurement. \x1b[m")
-                            print("Config in question: '" + confLine + "'.")
-                            print("Please check experiment config lines.")
-                            raise
-                        except:
-                            print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
-                                  + instNeededObj["purpose"] + " measurement. \x1b[m")
-                            print("Config in question: '" + confLine + "'.")
-                            print("Please check experiment config lines.")
-                            raise
-                expInstruments[instNeeded["var"]] = instNeededObj
+                    instNeededObj["res"] = foundInsts[0]['inst']
+            if "config" in instNeeded.keys():
+                for confLine in instNeededObj["config"]:
+                    try:
+                        instNeededObj["res"].write(confLine)
+                        time.sleep(0.2)
+                    except VisaIOError:
+                        print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
+                              + instNeededObj["purpose"] + " measurement. \x1b[m")
+                        print("Config in question: '" + confLine + "'.")
+                        print("Please check experiment config lines.")
+                        raise
+                    except:
+                        print("\x1b[;43m Error occurred while configuring " + instNeededObj["type"] + " for "
+                              + instNeededObj["purpose"] + " measurement. \x1b[m")
+                        print("Config in question: '" + confLine + "'.")
+                        print("Please check experiment config lines.")
+                        raise
+            expInstruments[instNeeded["var"]] = instNeededObj
     for instVar in expInstruments.keys():
         if instVar in serials.keys():
             print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],

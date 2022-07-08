@@ -9,6 +9,7 @@ requiredEquipment = {
         {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
     ],
 }
+
 expName = "Curie Weiss Lab"
 
 
