@@ -267,7 +267,7 @@ def HallPy_Teach(btn=None):
         expName = pickExpDropdown.label
 
         try:
-            assignInstsAndSetupExp(
+            return assignInstsAndSetupExp(
                 expName=expName,
                 expSetupFunc=expSetupFunc,
                 expReq=expReq,

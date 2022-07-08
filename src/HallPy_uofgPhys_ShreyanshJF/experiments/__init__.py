@@ -135,10 +135,10 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
     for instVar in expInstruments.keys():
         if instVar in serials.keys():
             print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
-                  "measurement. (", serials[instVar] + ")")
+                  ". (" + serials[instVar] + ")")
         else:
             print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
-                  "measurement.")
+                  ".")
     print(' ')
 
     return expInstruments
