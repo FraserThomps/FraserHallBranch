@@ -146,6 +146,7 @@ def initInstruments(inGui=False):
 def HallPy_Teach(btn=None, expInstruments=None):
 
     if expInstruments is not None:
+        print("in Return")
         return expInstruments
 
     if btn is None:
@@ -175,6 +176,10 @@ def HallPy_Teach(btn=None, expInstruments=None):
     def getUserSerialAssignment(expSetupFunc, expReq, availableInsts, expName):
         serials = {}
         serialDropdownsByType = {}
+        assignSerialsBtn = widgets.Button(
+            description="Assign Instruments",
+            icon="tachometer"
+        )
         for instType in expReq.keys():
             serialDropdownsByType[instType] = {}
             if len(expReq[instType]) > 1:
@@ -219,11 +224,6 @@ def HallPy_Teach(btn=None, expInstruments=None):
                         expName=expName,
                         pickedSerials=serials
                     )
-
-        assignSerialsBtn = widgets.Button(
-            description="Assign Instruments",
-            icon="tachometer"
-        )
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
 
@@ -238,7 +238,8 @@ def HallPy_Teach(btn=None, expInstruments=None):
             else:
                 expInsts = expSetupFunc(instruments=availableInsts, inGui=True)
 
-            HallPy_Teach(expInstruments=expInsts)
+            print("Returning Now")
+            HallPy_Teach(btn=None, expInstruments=expInsts)
 
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
