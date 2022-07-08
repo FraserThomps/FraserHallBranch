@@ -27,15 +27,8 @@ import time
 
 from pyvisa import VisaIOError
 
-from ..experiments import curieWeiss, hallEffect, test
 from ..helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
 from ..helper import reconnectInstructions, getInstTypeCount
-
-allExperiments = [
-    curieWeiss,
-    hallEffect,
-    test
-]
 
 
 def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
