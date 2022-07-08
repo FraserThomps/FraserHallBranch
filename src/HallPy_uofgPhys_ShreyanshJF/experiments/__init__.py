@@ -27,8 +27,15 @@ import time
 
 from pyvisa import VisaIOError
 
+from . import curieWeiss, test, hallEffect
 from ..helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
 from ..helper import reconnectInstructions, getInstTypeCount
+
+allExperiments = [
+    curieWeiss,
+    hallEffect,
+    test
+]
 
 
 def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
@@ -78,7 +85,8 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                     instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]['inst']
                 elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                     if not inGui:
-                        print("\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used \x1b[m")
+                        print(
+                            "\x1b[;43m Please provide the serial number(s) for the " + instType + " to be used \x1b[m")
                         print("\x1b[;43m for " + instNeededObj["purpose"] + " measurement. \x1b[m")
                         print("Required variable: '" + instNeeded["var"] + "'")
                     raise Exception("Missing serial numbers for " + instType + " assignment.")
@@ -133,7 +141,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
     for instVar in expInstruments.keys():
         if instVar in serials.keys():
             print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
-                  "measurement. (SN:", serials[instVar] + ")")
+                  "measurement. (", serials[instVar] + ")")
         else:
             print(expInstruments[instVar]['type'], "setup for", expInstruments[instVar]["purpose"],
                   "measurement.")

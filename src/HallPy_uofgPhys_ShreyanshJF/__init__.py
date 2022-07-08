@@ -27,7 +27,7 @@ from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from .experiments import curieWeiss, getAndSetupExpInsts, test
+from .experiments import allExperiments
 from .constants import supportedInstruments, serialRegex
 from .helper import reconnectInstructions, getInstTypeCount, sortArrByKey
 
@@ -143,12 +143,10 @@ def HallPy_Teach(btn=None):
     clear_output()
     instruments = initInstruments(inGui=True)
 
-    expChoices = [
-        # To Add Hall Effect Later
-        # ("Hall Effect Lab", "he"),
-        ("Test Lab", "test"),
-        ("Curie Weiss Lab", "cw")
-    ]
+    expChoices = []
+    for experiment in allExperiments:
+        expChoices.append((experiment.expName, experiment))
+
     pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
     submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
     onStartWidgets = [pickExpDropdown, submitBtn]
@@ -200,7 +198,7 @@ def HallPy_Teach(btn=None):
                     print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
                     break
                 else:
-                    assignSerialsButton.close()
+                    clear_output()
                     assignInstsAndSetupExp(
                         expSetupFunc=expSetupFunc,
                         expReq=expReq,
@@ -217,14 +215,15 @@ def HallPy_Teach(btn=None):
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
 
-    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials={}):
+    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials=None):
 
-        expInstruments = {}
+        if pickedSerials is None:
+            pickedSerials = {}
         try:
             if len(pickedSerials.keys()) > 0:
-                expInstruments = expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
+                return expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
             else:
-                expInstruments = expSetupFunc(instruments=availableInsts, inGui=True)
+                return expSetupFunc(instruments=availableInsts, inGui=True)
 
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
@@ -255,24 +254,17 @@ def HallPy_Teach(btn=None):
         clear_output()
         pickExpDropdown.close = True
         submitBtnAfterClick.close = True
-        exp = pickExpDropdown.value
+        expSetupFunc = pickExpDropdown.value.setup
+        expReq = pickExpDropdown.value.requiredEquipment
         expName = pickExpDropdown.label
 
         try:
-            if exp == "cw":
-                assignInstsAndSetupExp(
-                    expName=expName,
-                    expSetupFunc=curieWeiss.setup,
-                    expReq=curieWeiss.requiredEquipment,
-                    availableInsts=instruments
-                )
-            elif exp == "test":
-                assignInstsAndSetupExp(
-                    expName=expName,
-                    expSetupFunc=test.setup,
-                    expReq=test.requiredEquipment,
-                    availableInsts=instruments
-                )
+            assignInstsAndSetupExp(
+                expName=expName,
+                expSetupFunc=expSetupFunc,
+                expReq=expReq,
+                availableInsts=instruments
+            )
         except Exception as errMsg:
             restartSetupBtn.on_click(HallPy_Teach)
             restartSetupBtn.disabled = False

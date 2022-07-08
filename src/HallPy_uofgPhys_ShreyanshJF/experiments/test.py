@@ -13,7 +13,7 @@ requiredEquipment = {
                       {"purpose": "Test Power Supple 2", "var": "ps2"}
                   ],
 }
-
+expName = "Test"
 
 def setup(instruments=None, serials=None, inGui=False):
     if serials is None:
@@ -29,7 +29,6 @@ def setup(instruments=None, serials=None, inGui=False):
 
     foundReqInstruments = getAndSetupExpInsts(requiredEquipment, instruments, serials, inGui)
 
-    print("\x1b[;42m Instruments ready to use for Curie Weiss experiment \x1b[m")
-    print("This is a test")
+    print("\x1b[;42m The test instruments were setup successfully \x1b[m")
 
     return foundReqInstruments
