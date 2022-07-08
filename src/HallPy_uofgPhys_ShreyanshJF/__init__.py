@@ -208,7 +208,7 @@ def HallPy_Teach(btn=None):
                     break
             if doExecAssignment:
                 clear_output()
-                assignInstsAndSetupExp(
+                return assignInstsAndSetupExp(
                     expSetupFunc=expSetupFunc,
                     expReq=expReq,
                     availableInsts=availableInsts,
