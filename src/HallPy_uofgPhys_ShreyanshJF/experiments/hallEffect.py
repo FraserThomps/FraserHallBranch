@@ -4,11 +4,11 @@ from .__init__ import getAndSetupExpInsts
 requiredEquipment = {
     "Power Supply": [
         {"purpose": "Electromagnet", "var": "emPS"},
-        {"purpose": "Hall Bar Current", "var": "hcPS"}
+        {"purpose": "Current Supply", "var": "hcPS"}
     ],
     "Multimeter": [
         {"purpose": "Hall Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]},
-        {"purpose": "Hall Voltage", "var": "csMM", "config": ["CONF:CURR:DC"]}
+        {"purpose": "Hall Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
     ],
 }
 

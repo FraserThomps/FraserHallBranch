@@ -198,21 +198,22 @@ def HallPy_Teach(btn=None):
         def handle_submitSerials(assignSerialsButton):
             for dropdownName in serialDropdowns.keys():
                 serials[dropdownName] = serialDropdowns[dropdownName].value
-
+            
+            doExecAssignment = True
             for singleSerial in serials.values():
                 if list(serials.values()).count(singleSerial) > 1:
                     print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
+                    doExecAssignment = False
                     break
-                else:
-                    clear_output()
-                    assignInstsAndSetupExp(
-                        expSetupFunc=expSetupFunc,
-                        expReq=expReq,
-                        availableInsts=availableInsts,
-                        expName=expName,
-                        pickedSerials=serials
-                    )
-                    break
+            if doExecAssignment:
+                clear_output()
+                assignInstsAndSetupExp(
+                    expSetupFunc=expSetupFunc,
+                    expReq=expReq,
+                    availableInsts=availableInsts,
+                    expName=expName,
+                    pickedSerials=serials
+                )
 
         assignSerialsBtn = widgets.Button(
             description="Assign Instruments",
