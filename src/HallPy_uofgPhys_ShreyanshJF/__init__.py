@@ -198,6 +198,7 @@ def HallPy_Teach(btn=None):
             for singleSerial in serials.values():
                 if list(serials.values()).count(singleSerial) > 1:
                     print("\x1b[;43m You cannot pick the same device for more than one purpose \x1b[m ")
+                    break
                 else:
                     assignSerialsButton.close()
                     assignInstsAndSetupExp(
@@ -207,6 +208,7 @@ def HallPy_Teach(btn=None):
                         expName=expName,
                         pickedSerials=serials
                     )
+                    break
 
         assignSerialsBtn = widgets.Button(
             description="Assign Instruments",
