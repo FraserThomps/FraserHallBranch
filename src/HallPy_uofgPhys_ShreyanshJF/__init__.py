@@ -23,13 +23,19 @@ Submodules
 import re
 
 import pyvisa
+from .experiments import curieWeiss, hallEffect, test
 from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets
 
-from .experiments.allExperiments import allExperiments
 from .constants import supportedInstruments, serialRegex
 from .helper import reconnectInstructions, getInstTypeCount, sortArrByKey
+
+allExperiments = [
+    curieWeiss,
+    hallEffect,
+    test
+]
 
 
 def initInstruments(inGui=False):
