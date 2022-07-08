@@ -149,6 +149,9 @@ def HallPy_Teach(btn=None, expInstruments=None):
         print("in Return")
         return expInstruments
 
+    if expInstruments is not None:
+        print("still in HallPy_Teach()")
+
     if btn is None:
         btn = {}
     clear_output()
@@ -239,6 +242,7 @@ def HallPy_Teach(btn=None, expInstruments=None):
                 expInsts = expSetupFunc(instruments=availableInsts, inGui=True)
 
             print("Returning Now")
+            print(expInsts)
             HallPy_Teach(btn=None, expInstruments=expInsts)
 
         except Exception as errMsg:
