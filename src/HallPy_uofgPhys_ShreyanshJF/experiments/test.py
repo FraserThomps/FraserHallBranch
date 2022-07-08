@@ -3,17 +3,18 @@ from .__init__ import getAndSetupExpInsts
 
 requiredEquipment = {
     "LCR Meter": [
-                    {"purpose": "Capacitance", "var": "lcr"}
-                ],
+        {"purpose": "Capacitance", "var": "lcr"}
+    ],
     "Multimeter": [
-                      {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
-                  ],
+        {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
+    ],
     "Power Supply": [
-                      {"purpose": "Test Power Supple 1", "var": "ps1"},
-                      {"purpose": "Test Power Supple 2", "var": "ps2"}
-                  ],
+        {"purpose": "Test Power Supple 1", "var": "ps1"},
+        {"purpose": "Test Power Supple 2", "var": "ps2"}
+    ],
 }
 expName = "Test"
+
 
 def setup(instruments=None, serials=None, inGui=False):
     if serials is None:

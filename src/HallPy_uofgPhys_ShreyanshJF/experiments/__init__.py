@@ -27,7 +27,9 @@ import time
 
 from pyvisa import VisaIOError
 
-from . import curieWeiss, test, hallEffect
+import curieWeiss
+import test
+import hallEffect
 from ..helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
 from ..helper import reconnectInstructions, getInstTypeCount
 

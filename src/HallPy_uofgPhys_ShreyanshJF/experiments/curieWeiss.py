@@ -3,11 +3,11 @@ from .__init__ import getAndSetupExpInsts
 
 requiredEquipment = {
     "LCR Meter": [
-                    {"purpose": "Capacitance", "var": "lcr"}
-                ],
+        {"purpose": "Capacitance", "var": "lcr"}
+    ],
     "Multimeter": [
-                      {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
-                  ],
+        {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
+    ],
 }
 expName = "Curie Weiss Lab"
 
