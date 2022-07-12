@@ -143,30 +143,37 @@ def initInstruments(inGui=False):
         return instruments
 
 
-def HallPy_Teach(btn=None):
-    clear_output()
-    instruments = initInstruments(inGui=True)
+class Setup:
 
-    expChoices = []
-    for experiment in allExperiments:
-        expChoices.append((experiment.expName, experiment))
+    def __init__(self, btn=None):
 
-    pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
-    submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
-    onStartWidgets = [pickExpDropdown, submitBtn]
+        self.instruments = initInstruments()
 
-    restartSetupBtn = widgets.Button(
-        description="Restart Setup",
-        icon="play",
-        disabled=True
-    )
+        expChoices = []
+        for experiment in allExperiments:
+            expChoices.append((experiment.expName, experiment))
 
-    print(" ")
-    print("Choose experiment to perform")
-    # noinspection PyTypeChecker
-    display(widgets.VBox(onStartWidgets))
+        self.pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
+        self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
+        self.restartSetupBtn = widgets.Button(
+            description="Restart Setup",
+            icon="play",
+            disabled=True
+        )
 
-    def getUserSerialAssignment(expSetupFunc, expReq, availableInsts, expName):
+        clear_output()
+        self.instruments = initInstruments(inGui=True)
+
+        onStartWidgets = [self.pickExpDropdown, self.submitBtn]
+
+        print(" ")
+        print("Choose experiment to perform")
+
+        self.submitBtn.on_click(self.handle_pickExpSubmit)
+        # noinspection PyTypeChecker
+        display(widgets.VBox(onStartWidgets))
+
+    def getUserSerialAssignment(self, expSetupFunc, expReq, availableInsts, expName):
         serials = {}
         serialDropdownsByType = {}
         assignSerialsBtn = widgets.Button(
@@ -210,7 +217,7 @@ def HallPy_Teach(btn=None):
                     break
             if doExecAssignment:
                 clear_output()
-                return assignInstsAndSetupExp(
+                return self.assignInstsAndSetupExp(
                     expSetupFunc=expSetupFunc,
                     expReq=expReq,
                     availableInsts=availableInsts,
@@ -221,7 +228,7 @@ def HallPy_Teach(btn=None):
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
 
-    def assignInstsAndSetupExp(expSetupFunc, expReq, availableInsts, expName, pickedSerials=None):
+    def assignInstsAndSetupExp(self, expSetupFunc, expReq, availableInsts, expName, pickedSerials=None):
 
         if pickedSerials is None:
             pickedSerials = {}
@@ -238,7 +245,7 @@ def HallPy_Teach(btn=None):
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
             if "missing serial" in errMsg:
-                getUserSerialAssignment(
+                self.getUserSerialAssignment(
                     expSetupFunc=expSetupFunc,
                     expReq=expReq,
                     availableInsts=availableInsts,
@@ -252,34 +259,32 @@ def HallPy_Teach(btn=None):
                         print("  -", reqInstType, "for", inst['purpose'], "measurement")
                 print('')
                 reconnectInstructions(inGui=True)
-                restartSetupBtn.disabled = False
-                restartSetupBtn.on_click(HallPy_Teach)
+                self.restartSetupBtn.disabled = False
+                self.restartSetupBtn.on_click(Setup)
                 # noinspection PyTypeChecker
-                display(widgets.VBox([restartSetupBtn]))
+                display(widgets.VBox([self.restartSetupBtn]))
             else:
                 raise
 
-    def handle_pickExpSubmit(submitBtnAfterClick=None):
+    def handle_pickExpSubmit(self, submitBtnAfterClick=None):
 
         clear_output()
-        pickExpDropdown.close = True
+        self.pickExpDropdown.close = True
         submitBtnAfterClick.close = True
-        expSetupFunc = pickExpDropdown.value.setup
-        expReq = pickExpDropdown.value.requiredEquipment
-        expName = pickExpDropdown.label
+        expSetupFunc = self.pickExpDropdown.value.setup
+        expReq = self.pickExpDropdown.value.requiredEquipment
+        expName = self.pickExpDropdown.label
 
         try:
-            return assignInstsAndSetupExp(
+            return self.assignInstsAndSetupExp(
                 expName=expName,
                 expSetupFunc=expSetupFunc,
                 expReq=expReq,
-                availableInsts=instruments
+                availableInsts=self.instruments
             )
         except Exception as errMsg:
-            restartSetupBtn.on_click(HallPy_Teach)
-            restartSetupBtn.disabled = False
+            self.restartSetupBtn.on_click(Setup)
+            self.restartSetupBtn.disabled = False
             print(errMsg)
             # noinspection PyTypeChecker
-            display(widgets.VBox([restartSetupBtn]))
-
-    submitBtn.on_click(handle_pickExpSubmit)
+            display(widgets.VBox([self.restartSetupBtn]))
