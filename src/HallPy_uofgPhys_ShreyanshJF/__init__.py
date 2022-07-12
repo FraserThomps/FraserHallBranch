@@ -147,6 +147,7 @@ class Setup:
 
     def __init__(self, btn=None):
 
+        self.expInsts = None
         self.instruments = initInstruments()
 
         expChoices = []
@@ -217,13 +218,14 @@ class Setup:
                     break
             if doExecAssignment:
                 clear_output()
-                return self.assignInstsAndSetupExp(
+                self.expInsts = self.assignInstsAndSetupExp(
                     expSetupFunc=expSetupFunc,
                     expReq=expReq,
                     availableInsts=availableInsts,
                     expName=expName,
                     pickedSerials=serials
                 )
+                return self.expInsts
 
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
@@ -276,12 +278,13 @@ class Setup:
         expName = self.pickExpDropdown.label
 
         try:
-            return self.assignInstsAndSetupExp(
+            self.expInsts = self.assignInstsAndSetupExp(
                 expName=expName,
                 expSetupFunc=expSetupFunc,
                 expReq=expReq,
                 availableInsts=self.instruments
             )
+            return self.expInsts
         except Exception as errMsg:
             self.restartSetupBtn.on_click(Setup)
             self.restartSetupBtn.disabled = False
