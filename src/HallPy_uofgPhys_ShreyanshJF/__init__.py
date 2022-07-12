@@ -143,17 +143,7 @@ def initInstruments(inGui=False):
         return instruments
 
 
-def HallPy_Teach(btn=None, expInstruments=None):
-
-    if expInstruments is not None:
-        print("in Return")
-        return expInstruments
-
-    if expInstruments is not None:
-        print("still in HallPy_Teach()")
-
-    if btn is None:
-        btn = {}
+def HallPy_Teach(btn=None):
     clear_output()
     instruments = initInstruments(inGui=True)
 
@@ -220,13 +210,14 @@ def HallPy_Teach(btn=None, expInstruments=None):
                     break
             if doExecAssignment:
                 clear_output()
-                assignInstsAndSetupExp(
-                        expSetupFunc=expSetupFunc,
-                        expReq=expReq,
-                        availableInsts=availableInsts,
-                        expName=expName,
-                        pickedSerials=serials
-                    )
+                return assignInstsAndSetupExp(
+                    expSetupFunc=expSetupFunc,
+                    expReq=expReq,
+                    availableInsts=availableInsts,
+                    expName=expName,
+                    pickedSerials=serials
+                )
+
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
 
@@ -242,8 +233,7 @@ def HallPy_Teach(btn=None, expInstruments=None):
                 expInsts = expSetupFunc(instruments=availableInsts, inGui=True)
 
             print("Returning Now")
-            print(expInsts)
-            HallPy_Teach(btn=None, expInstruments=expInsts)
+            return expInsts
 
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
@@ -279,7 +269,7 @@ def HallPy_Teach(btn=None, expInstruments=None):
         expName = pickExpDropdown.label
 
         try:
-            assignInstsAndSetupExp(
+            return assignInstsAndSetupExp(
                 expName=expName,
                 expSetupFunc=expSetupFunc,
                 expReq=expReq,
