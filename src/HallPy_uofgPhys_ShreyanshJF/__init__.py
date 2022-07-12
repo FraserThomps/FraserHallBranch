@@ -147,32 +147,28 @@ class Setup:
 
     def __init__(self, btn=None):
 
-        self.expInsts = None
-        self.instruments = initInstruments()
-
         expChoices = []
         for experiment in allExperiments:
             expChoices.append((experiment.expName, experiment))
 
-        self.pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
-        self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
         self.restartSetupBtn = widgets.Button(
             description="Restart Setup",
             icon="play",
             disabled=True
         )
+        self.pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
+        self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
+        self.submitBtn.on_click(self.handle_pickExpSubmit)
+        self.expInsts = None
 
         clear_output()
         self.instruments = initInstruments(inGui=True)
 
-        onStartWidgets = [self.pickExpDropdown, self.submitBtn]
-
         print(" ")
         print("Choose experiment to perform")
 
-        self.submitBtn.on_click(self.handle_pickExpSubmit)
         # noinspection PyTypeChecker
-        display(widgets.VBox(onStartWidgets))
+        display(widgets.VBox([self.pickExpDropdown, self.submitBtn]))
 
     def getUserSerialAssignment(self, expSetupFunc, expReq, availableInsts, expName):
         serials = {}
