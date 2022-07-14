@@ -148,10 +148,10 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
         print("Voltage Increment = (Max Voltage - Min Voltage) / (Experiment Length (s) / Measurement Interval (s))")
         raise ValueError("Current supply voltage increment would be too low. ")
 
-    emPS = expInsts["emPS"]["inst"]
-    hcPS = expInsts["hcPS"]["inst"]
-    hvMM = expInsts["hvMM"]["inst"]
-    hcMM = expInsts["hcMM"]["inst"]
+    emPS = expInsts["emPS"]["res"]
+    hcPS = expInsts["hcPS"]["res"]
+    hvMM = expInsts["hvMM"]["res"]
+    hcMM = expInsts["hcMM"]["res"]
 
     emPS.write("ISET1:0.001")
     hcPS.write("ISET1:0.001")
