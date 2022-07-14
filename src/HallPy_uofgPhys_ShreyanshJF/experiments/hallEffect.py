@@ -118,7 +118,7 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
         "hallVolt": []
     }
     loopMaxCount = expLength / measurementInterval
-    supVoltIncrement = (supVoltSweep(1) - supVoltSweep(0)) / loopMaxCount
+    supVoltIncrement = (supVoltSweep[1] - supVoltSweep[0]) / loopMaxCount
     emVoltIncrement = 0
 
     if len(emSweep) != 1:
