@@ -33,3 +33,7 @@ def setup(instruments=None, serials=None, inGui=False):
     print("\x1b[;42m The test instruments were setup successfully \x1b[m")
 
     return foundReqInstruments
+
+
+def doExperiment():
+    print("TEST")

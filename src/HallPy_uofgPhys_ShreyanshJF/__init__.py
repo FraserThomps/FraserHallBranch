@@ -160,6 +160,7 @@ class Setup:
         self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
         self.submitBtn.on_click(self.handle_pickExpSubmit)
         self.expInsts = None
+        self.doExperiment = None
 
         clear_output()
         self.instruments = initInstruments(inGui=True)
@@ -272,6 +273,7 @@ class Setup:
         expSetupFunc = self.pickExpDropdown.value.setup
         expReq = self.pickExpDropdown.value.requiredEquipment
         expName = self.pickExpDropdown.label
+        self.doExperiment = self.pickExpDropdown.value.setup.doExperiment
 
         try:
             self.expInsts = self.assignInstsAndSetupExp(
