@@ -71,7 +71,7 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
 
     inGui = True
 
-    # TO-D0: Add emergency experiment stop for max currnet
+    # TO-D0: Add emergency experiment stop for max current
 
     if len(expInsts) == 0:
         print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
@@ -97,7 +97,8 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
 
     if expLength < (20*60):
         print("\x1b[;43m Please provide a valid length of time for the experiment to run. \x1b[m")
-        print("Valid minimum experiment length: 20 seconds | Valid maximum experiment length: 20 minutes (1200 seconds)")
+        print("Valid minimum experiment duration: 20 seconds")
+        print("Valid maximum experiment length: 20 minutes (1200 seconds)")
         print("Current length:", expLength)
         exampleExpCode()
         raise ValueError("Invalid experiment length time in doExperiment(). Argument in question: expLength")
@@ -137,7 +138,7 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
 
     if 0.001 > np.absolute(emVoltIncrement) > 0:
         print("\x1b[;43m The power supply can only increment the voltage in steps of 0.001V. \x1b[m")
-        print("With the current experiment variables the current supply voltage increment would be", supVoltIncrement + "V.")
+        print("With the given experiment variables the supply voltage increment would be", supVoltIncrement + "V.")
         print("Please do one of the following things to increase the ")
         print("  - Increase the voltage sweep range")
         print("  - Decrease the measurement interval")
@@ -224,4 +225,3 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
     print("The power supplies have been reset.")
 
     return data
-
