@@ -195,10 +195,10 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
         clearAndDrawOutputs(liveReadings)
 
         data["time"].append(timePassed)
-        data["emVolt"].append(curEMVolt)
-        data["supplyVolt"].append(curSupVolt)
-        data["supplyCurr"].append(curSupI)
-        data["hallVolt"].append(curHallVolt)
+        data["emVolt"].append(float(curEMVolt))
+        data["supplyVolt"].append(float(curSupVolt))
+        data["supplyCurr"].append(float(curSupI))
+        data["hallVolt"].append(float(curHallVolt))
 
         timePassed += measurementInterval
         timeLeft -= measurementInterval
@@ -224,4 +224,6 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
 
     print("The power supplies have been reset.")
 
+    for key in data.keys():
+        data[key] = np.array(data[key])
     return data
