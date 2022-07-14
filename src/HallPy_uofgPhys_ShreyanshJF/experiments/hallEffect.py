@@ -95,7 +95,7 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
         exampleExpCode()
         raise ValueError("Invalid hall bar voltage sweep values in doExperiment(). Argument in question: supVoltSweep")
 
-    if expLength < (20*60):
+    if expLength > 1200:
         print("\x1b[;43m Please provide a valid length of time for the experiment to run. \x1b[m")
         print("Valid minimum experiment duration: 20 seconds")
         print("Valid maximum experiment length: 20 minutes (1200 seconds)")
