@@ -170,14 +170,14 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
         loopStartTime = time.time()
 
         if curLoopCount == 0:
-            emPS.write("VSET:" + str(curEMVolt))
-            hcPS.write("VSET:" + str(curSupVolt))
+            emPS.write("VSET1:" + str(curEMVolt))
+            hcPS.write("VSET1:" + str(curSupVolt))
         else:
             if emVoltIncrement != 0:
                 curEMVolt = curEMVolt + emVoltIncrement
             curSupVolt = curSupVolt + supVoltIncrement
-            emPS.write("VSET:" + str(curEMVolt)[0, 3])
-            hcPS.write("VSET:" + str(curSupVolt)[0, 3])
+            emPS.write("VSET1:" + str(curEMVolt))
+            hcPS.write("VSET1:" + str(curSupVolt))
 
         time.sleep(0.1)
 
