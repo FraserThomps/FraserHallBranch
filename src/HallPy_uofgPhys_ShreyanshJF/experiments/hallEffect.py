@@ -153,8 +153,8 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
     hvMM = expInsts["hvMM"]["res"]
     hcMM = expInsts["hcMM"]["res"]
 
-    emPS.write("ISET1:0.001")
-    hcPS.write("ISET1:0.001")
+    emPS.write("ISET1:0.700")
+    hcPS.write("ISET1:0.010")
     emPS.write("VSET1:0.000")
     hcPS.write("VSET1:0.000")
 
@@ -176,8 +176,8 @@ def doExperiment(expInsts=None, emSweep=(), supVoltSweep=(), expLength=0, measur
             if emVoltIncrement != 0:
                 curEMVolt = curEMVolt + emVoltIncrement
             curSupVolt = curSupVolt + supVoltIncrement
-            emPS.write("VSET:" + str(curEMVolt))
-            hcPS.write("VSET:" + str(curSupVolt))
+            emPS.write("VSET:" + str(curEMVolt)[0, 3])
+            hcPS.write("VSET:" + str(curSupVolt)[0, 3])
 
         time.sleep(0.1)
 
