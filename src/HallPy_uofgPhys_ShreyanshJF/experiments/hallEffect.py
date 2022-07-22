@@ -243,15 +243,13 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
 
     try:
         for emV in emVolts:
-            curLoopStartTime = time.time()
             setPSVolt(emV, emPS)
             time.sleep(0.6)
             curEMCurr = float(emPS.query("IOUT1?"))
             if curEMCurr > maxEMCurr:
                 raise Warning("Electromagnet current was too high. Current before cut off: " + str(curEMCurr))
-
             data[str(emV)]["emCurr"] = curEMCurr
-
+            curLoopStartTime = time.time()
             while curSupVolt < endSupVolt:
                 setPSVolt(curSupVolt, hcPS)
                 curSupCurr = float(hcMM.query("READ?"))
@@ -260,7 +258,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                     raise Warning("Supply current was too high. Current before cut off: " + str(curSupCurr))
 
                 curLoopEndTime = time.time()
-                time.sleep(measurementInterval - (curLoopEndTime - curLoopStartTime))
+                if (measurementInterval - (curLoopEndTime - curLoopStartTime)) > 0:
+                    time.sleep(measurementInterval - (curLoopEndTime - curLoopStartTime))
 
                 data[str(emV)]["time"].append(timeOnCurSupLoop)
                 data[str(emV)]["supplyVolt"].append(curSupVolt)
