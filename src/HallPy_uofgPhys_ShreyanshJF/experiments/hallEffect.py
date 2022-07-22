@@ -98,13 +98,14 @@ def draw3DHELabGraphs(dataToGraph):
     verts = []
     for emV in emVsWithData:
         if len(dataToGraph[emV]['time']) > 0:
-            dataToGraph[emV][toGraphOnX].append(dataToGraph[emV][toGraphOnX][-1])
-            dataToGraph[emV][toGraphOnY].append(dataToGraph[emV][toGraphOnY][0])
             verts.append(list(zip(np.array(dataToGraph[emV][toGraphOnX]) * dataScaling[toGraphOnX],
                                   np.array(dataToGraph[emV][toGraphOnY]) * dataScaling[toGraphOnY]
                                   )))
 
-    faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(list(dataToGraph.keys()))))
+    for xySet in verts:
+        xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], xySet[0][1]))
+
+    faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(emVsWithData)))
     poly = PolyCollection(verts, facecolors=faceColours, alpha=0.75)
 
     ax.add_collection3d(poly, zs=[float(V) for V in emVsWithData], zdir='y')
@@ -121,16 +122,14 @@ def draw3DHELabGraphs(dataToGraph):
     yMin = np.amin(allYVals) * dataScaling[toGraphOnY]
     ax.set_xlabel(dataGraphLabels[toGraphOnX], fontsize=14, labelpad=10)
     ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
-    ax.set_ylabel("Electromagnet Volt. (V)", fontsize=14, labelpad=10)
+    ax.set_ylabel("EM Volt. (V)", fontsize=14, labelpad=10)
     ax.set_yticks([float(V) for V in emVsWithData])
     ax.azim = -80
-    ax.elev = 15
+    ax.elev = 10
     ax.set(xlim=(xMin, xMax),
            zlim=(yMin, yMax),
            ylim=(np.amin([float(V) for V in emVsWithData]) - 2, np.amax([float(V) for V in emVsWithData]) + 2))
     plt.show()
-
-    del dataToGraph
 
 
 def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1):
@@ -144,8 +143,6 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
 
     maxEMCurr = 0.700
     maxSupCurr = 0.0001
-
-    # TO-D0: Add emergency experiment stop for max current
 
     if len(expInsts) == 0:
         print("\x1b[;43m No instruments could be recognised / contacted \x1b[m")
@@ -270,7 +267,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
 
                 liveReading = {
                     "EM Volt.  (V)": np.round(emV, decimals=3),
-                    "EM Curr. (I)": np.round(curEMCurr, decimals=3),
+                    "EM Curr. (A)": np.round(curEMCurr, decimals=3),
                     "Supply Curr. (\u03bcA)": np.round((curSupCurr * 1000000), decimals=3),
                     "Supply Volt. (V)": np.round(curSupVolt, decimals=3),
                     "Hall Volt. (mV)": np.round((curHallVolt * 1000), decimals=3),
@@ -279,9 +276,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                     "Time Left (s)": timeLeft
                 }
 
-                dataToGraph = data.copy()
                 clear_output(wait=True)
-                draw3DHELabGraphs(dataToGraph)
+                draw3DHELabGraphs(data)
                 showLiveReadings(liveReading)
 
                 curSupVolt += supVoltIncrement
