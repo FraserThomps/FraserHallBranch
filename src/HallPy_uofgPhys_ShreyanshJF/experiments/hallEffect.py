@@ -76,7 +76,7 @@ def draw3DHELabGraphs(dataToGraph):
 
     verts = []
     for Vs in list(dataToGraph.keys()):
-        verts.append(list(zip(dataToGraph[Vs][0], dataToGraph[Vs][1])))
+        verts.append(list(zip(dataToGraph[Vs]["supplyCurr"], dataToGraph[Vs]["hallVolt"])))
 
     for xySet in verts:
         xySet.insert(0, (xySet[0][0], 0))
