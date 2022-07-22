@@ -96,15 +96,12 @@ def draw3DHELabGraphs(data):
         if len(dataToGraph[emV]['time']) > 0:
             emVsWithData.append(emV)
 
-    for emV in emVsWithData:
-        if type(dataToGraph[emV][toGraphOnX]) is list:
-            dataToGraph[emV][toGraphOnX] = np.array(dataToGraph[emV][toGraphOnX]) * dataScaling[toGraphOnX]
-            dataToGraph[emV][toGraphOnY] = np.array(dataToGraph[emV][toGraphOnY]) * dataScaling[toGraphOnY]
-
     verts = []
     for emV in emVsWithData:
         if len(dataToGraph[emV]['time']) > 0:
-            verts.append(list(zip(dataToGraph[emV][toGraphOnX], dataToGraph[emV][toGraphOnY])))
+            verts.append(list(zip(np.array(dataToGraph[emV][toGraphOnX]) * dataScaling[toGraphOnX],
+                                  np.array(dataToGraph[emV][toGraphOnY]) * dataScaling[toGraphOnY]
+                                  )))
 
     for xySet in verts:
         xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], xySet[0][1]))
