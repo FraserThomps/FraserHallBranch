@@ -117,10 +117,10 @@ def draw3DHELabGraphs(data):
         allXVals.extend(dataToGraph[emV][toGraphOnX])
         allYVals.extend(dataToGraph[emV][toGraphOnY])
 
-    xMax = np.amax(allXVals)
-    xMin = np.amin(allXVals)
-    yMax = np.amax(allYVals)
-    yMin = np.amin(allYVals)
+    xMax = np.amax(allXVals) * dataScaling[toGraphOnX]
+    xMin = np.amin(allXVals) * dataScaling[toGraphOnX]
+    yMax = np.amax(allYVals) * dataScaling[toGraphOnY]
+    yMin = np.amin(allYVals) * dataScaling[toGraphOnY]
     ax.set_xlabel(dataGraphLabels[toGraphOnX], fontsize=14, labelpad=10)
     ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
     ax.set_ylabel("Electromagnet Voltage (V)", fontsize=14, labelpad=10)
