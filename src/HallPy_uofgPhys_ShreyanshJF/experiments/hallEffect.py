@@ -217,18 +217,18 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         for emV in emVolts:
             curLoopStartTime = time.time()
             setPSVolt(emV, emPS)
-            curEMCurr = emPS.query("IOUT1?")
+            curEMCurr = float(emPS.query("IOUT1?"))
             if float(curEMCurr) > maxEMCurr:
-                raise Warning("Electromagnet current was too high. Current before cut off:", str(curEMCurr))
+                raise Warning("Electromagnet current was too high. Current before cut off: " + str(curEMCurr))
 
             data[str(emV)]["emCurr"] = curEMCurr
 
             while curSupVolt < endSupVolt:
                 setPSVolt(curSupVolt, hcPS)
-                curSupCurr = hcMM.query("READ?")
-                curHallVolt = hvMM.query("READ?")
+                curSupCurr = float(hcMM.query("READ?"))
+                curHallVolt = float(hvMM.query("READ?"))
                 if float(curSupVolt) > maxSupCurr:
-                    raise Warning("Supply current was too high. Current before cut off:", str(curSupCurr))
+                    raise Warning("Supply current was too high. Current before cut off: " + str(curSupCurr))
 
                 curLoopEndTime = time.time()
                 time.sleep(measurementInterval - (curLoopEndTime - curLoopStartTime))
@@ -258,7 +258,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 curSupVolt += supVoltIncrement
                 curLoopStartTime = time.time()
 
-            curEMCurr = emPS.query("IOUT1?")
+            curEMCurr = float(emPS.query("IOUT1?"))
             if float(curEMCurr) > maxEMCurr:
                 raise Warning("Electromagnet current is too high. Current before cut off:", str(curEMCurr))
 
@@ -272,7 +272,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         print("The power supplies have been reset.")
 
     except VisaIOError:
-        print("\x1b[43m IMMEDIATELY SET ALL THE POWER SUPPLY VOLTAGES TO 0 \x1b[m;")
+        print("\x1b[43m IMMEDIATELY SET ALL THE POWER SUPPLY VOLTAGES TO 0 \x1b[m")
         print("Could not complete the full experiment")
         raise
     except:
@@ -281,7 +281,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         setPSCurr(0.000, hcPS)
         setPSVolt(0.000, hcPS)
         print("The power supplies have been reset.")
-        print("\x1b[43m Could not complete the full experiment \x1b[m;")
+        print("\x1b[43m Could not complete the full experiment \x1b[m")
         raise
 
     print("Data collection completed.")
