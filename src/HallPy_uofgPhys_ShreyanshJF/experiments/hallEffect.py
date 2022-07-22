@@ -78,7 +78,7 @@ def draw3DHELabGraphs(dataToGraph):
     toGraphOnY = "hallVolt"
     verts = []
     for emV in list(dataToGraph.keys()):
-        if len(dataToGraph[emV]['time'][0]) > 0:
+        if len(dataToGraph[emV]['time']) > 0:
             verts.append(list(zip(dataToGraph[emV][toGraphOnX], dataToGraph[emV][toGraphOnY])))
 
     for xySet in verts:
