@@ -291,6 +291,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
             if float(curEMCurr) > maxEMCurr:
                 raise Warning("Electromagnet current is too high. Current before cut off:", str(curEMCurr))
 
+            timeOnCurSupLoop = 0.000
             curSupVolt = startSupVolt
             time.sleep(timeBetweenEMVChange - 0.6)
             timeLeft -= timeBetweenEMVChange
