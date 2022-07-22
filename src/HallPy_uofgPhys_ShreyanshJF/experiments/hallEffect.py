@@ -70,11 +70,10 @@ def exampleExpCode():
     print("   5 |        )")
 
 
-def draw3DHELabGraphs(data):
+def draw3DHELabGraphs(dataToGraph):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.gca(projection='3d')
 
-    dataToGraph = data.copy()
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallVolt"
 
@@ -280,8 +279,9 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                     "Time Left (s)": timeLeft
                 }
 
+                dataToGraph = data.copy()
                 clear_output(wait=True)
-                draw3DHELabGraphs(data)
+                draw3DHELabGraphs(dataToGraph)
                 showLiveReadings(liveReading)
 
                 curSupVolt += supVoltIncrement
