@@ -86,9 +86,9 @@ def draw3DHELabGraphs(data):
     }
     dataGraphLabels = {
         "time": "Time (s)",
-        "supplyVolt": "Supply Voltage (V)",
+        "supplyVolt": "Supply Volt. (V)",
         "supplyCurr": "Supply Curr. (\u03bcA)",
-        "hallVolt": "Hall Voltage (mV)",
+        "hallVolt": "Hall Volt. (mV)",
     }
 
     emVsWithData = []
@@ -123,7 +123,7 @@ def draw3DHELabGraphs(data):
     yMin = np.amin(allYVals) * dataScaling[toGraphOnY]
     ax.set_xlabel(dataGraphLabels[toGraphOnX], fontsize=14, labelpad=10)
     ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
-    ax.set_ylabel("Electromagnet Voltage (V)", fontsize=14, labelpad=10)
+    ax.set_ylabel("Electromagnet Volt. (V)", fontsize=14, labelpad=10)
     ax.set_yticks([float(V) for V in emVsWithData])
     ax.azim = -60
     ax.elev = 15
