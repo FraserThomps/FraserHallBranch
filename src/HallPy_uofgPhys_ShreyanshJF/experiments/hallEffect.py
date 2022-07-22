@@ -74,9 +74,11 @@ def draw3DHELabGraphs(dataToGraph):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.gca(projection='3d')
 
+    toGraphOnX = "supplyCurr"
+    toGraphOnY = "hallVolt"
     verts = []
     for Vs in list(dataToGraph.keys()):
-        verts.append(list(zip(dataToGraph[Vs]["supplyCurr"], dataToGraph[Vs]["hallVolt"])))
+        verts.append(list(zip(dataToGraph[Vs][toGraphOnX], dataToGraph[Vs][toGraphOnY])))
 
     for xySet in verts:
         xySet.insert(0, (xySet[0][0], 0))
@@ -87,22 +89,22 @@ def draw3DHELabGraphs(dataToGraph):
 
     ax.add_collection3d(poly, zs=[float(V) for V in dataToGraph.keys()], zdir='y')
 
-    xMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][0])
-    xMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][0])
-    yMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][1])
-    yMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][1])
+    xMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnX])
+    xMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnX])
+    yMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnY])
+    yMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnY])
     ax.set_xlabel('Supply Current', fontsize=14, labelpad=10)
     ax.set_zlabel('Hall Voltage', fontsize=14, labelpad=10)
     ax.set_ylabel('Electromagnet Voltage', fontsize=14, labelpad=10)
-    ax.set_yticks(list(dataToGraph.keys()))
+    ax.set_yticks([float(V) for V in dataToGraph.keys()])
     ax.azim = -60
     ax.elev = 15
     if len(list(dataToGraph.keys())) <= 2:
         ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin(list(dataToGraph.keys())) - 2, np.amax(list(dataToGraph.keys())) + 2))
+               ylim=(np.amin([float(V) for V in dataToGraph.keys()]) - 2, np.amax([float(V) for V in dataToGraph.keys()]) + 2))
     else:
         ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin(list(dataToGraph.keys())), np.amax(list(dataToGraph.keys()))))
+               ylim=(np.amin([float(V) for V in dataToGraph.keys()]), np.amax([float(V) for V in dataToGraph.keys()])))
     plt.show()
 
 
