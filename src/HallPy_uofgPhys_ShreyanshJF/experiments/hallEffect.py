@@ -77,12 +77,13 @@ def draw3DHELabGraphs(dataToGraph):
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallVolt"
     verts = []
-    for Vs in list(dataToGraph.keys()):
-        verts.append(list(zip(dataToGraph[Vs][toGraphOnX], dataToGraph[Vs][toGraphOnY])))
+    for emV in list(dataToGraph.keys()):
+        if len(dataToGraph[emV]['time'][0]) > 0:
+            verts.append(list(zip(dataToGraph[emV][toGraphOnX], dataToGraph[emV][toGraphOnY])))
 
     for xySet in verts:
-        xySet.insert(0, (xySet[0][0], 0))
-        xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], 0))
+        # xySet.insert(0, (xySet[0][0], 0))
+        xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], xySet[0][1]))
 
     faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(list(dataToGraph.keys()))))
     poly = PolyCollection(verts, facecolors=faceColours, alpha=0.75)
