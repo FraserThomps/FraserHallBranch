@@ -1,10 +1,12 @@
 import time
 
 import numpy as np
+from IPython.core.display import clear_output
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
+from pyvisa import VisaIOError
 
-from ..helper import reconnectInstructions, clearAndDrawOutputs
+from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt
 from .__init__ import getAndSetupExpInsts
 
 requiredEquipment = {
@@ -67,7 +69,6 @@ def exampleExpCode():
 
 
 def draw3DHELabGraphs(dataToGraph):
-
     # TO-DO
     # Add live time dependent graph
     fig = plt.figure(figsize=(7, 7))
@@ -106,7 +107,6 @@ def draw3DHELabGraphs(dataToGraph):
 
 
 def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1):
-
     if expInsts is None:
         expInsts = []
 
@@ -114,6 +114,9 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         emVolts = []
 
     inGui = True
+
+    maxEMCurr = 0.700
+    maxSupCurr = 0.001
 
     # TO-D0: Add emergency experiment stop for max current
 
@@ -168,16 +171,17 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         raise ValueError("Invalid experiment length time in doExperiment(). Argument in question: expLength")
 
     data = {}
+    emVolts.sort()
     for V in emVolts:
         data[str(V)] = {
             "time": [],
             "supplyVolt": [],
             "supplyCurr": [],
-            "hallVolt": []
+            "hallVolt": [],
+            "emCurr": 0
         }
 
     supVoltIncrement = (supVoltSweep[1] - supVoltSweep[0]) / dataPointsPerSupSweep
-
     if np.absolute(supVoltIncrement) < 0.001:
         print("\x1b[;43m The power supply can only increment the voltage in steps of 0.001V. \x1b[m")
         print("With the current experiment variables the needed voltage increment would be", supVoltIncrement + "V.")
@@ -195,95 +199,96 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     hvMM = expInsts["hvMM"]["res"]
     hcMM = expInsts["hcMM"]["res"]
 
-    emPS.write("ISET1:0.700")
-    hcPS.write("ISET1:0.010")
-    emPS.write("VSET1:0.000")
-    hcPS.write("VSET1:0.000")
+    setPSCurr(0.700, emPS)
+    setPSVolt(0.000, emPS)
+    setPSCurr(0.010, hcPS)
+    setPSVolt(0.000, hcPS)
 
     timeBetweenEMVChange = 2
-    curLoopCount = 0
     sweepDur = measurementInterval * dataPointsPerSupSweep
-    expDur = (sweepDur * len(emVolts)) + (timeBetweenEMVChange * (len(emVolts) - 1))
-    startEMVolt = emVolts[0]
     startSupVolt = supVoltSweep[0]
-    curSupVolt = startEMVolt
-    curEMVolt = startSupVolt
+    endSupVolt = supVoltSweep[1]
+    curSupVolt = startSupVolt
     timePassed = 0.000
-    timeLeft = expDur
-    timeToNextSweep = sweepDur
+    timeOnCurSupLoop = 0
+    timeLeft = (sweepDur * len(emVolts)) + (timeBetweenEMVChange * (len(emVolts) - 1))
 
-    # TO-DO
-    # Nested while loop
-    # Remember to add safety shutoff
+    try:
+        for emV in emVolts:
+            curLoopStartTime = time.time()
+            setPSVolt(emV, emPS)
+            curEMCurr = emPS.query("IOUT1?")
+            if float(curEMCurr) > maxEMCurr:
+                raise Warning("Electromagnet current was too high. Current before cut off:", str(curEMCurr))
 
-    # OLD LOOP
-    while curLoopCount != loopMaxCount:
-        loopStartTime = time.time()
+            data[str(emV)]["emCurr"] = curEMCurr
 
-        if curLoopCount == 0:
-            emPS.write("VSET1:" + str(curEMVolt))
-            hcPS.write("VSET1:" + str(curSupVolt))
-        else:
-            if emVoltIncrement != 0:
-                curEMVolt = curEMVolt + emVoltIncrement
-            curSupVolt = curSupVolt + supVoltIncrement
-            emPS.write("VSET1:" + str(curEMVolt))
-            hcPS.write("VSET1:" + str(curSupVolt))
+            while curSupVolt < endSupVolt:
+                setPSVolt(curSupVolt, hcPS)
+                curSupCurr = hcMM.query("READ?")
+                curHallVolt = hvMM.query("READ?")
+                if float(curSupVolt) > maxSupCurr:
+                    raise Warning("Supply current was too high. Current before cut off:", str(curSupCurr))
 
-        time.sleep(0.1)
+                curLoopEndTime = time.time()
+                time.sleep(measurementInterval - (curLoopEndTime - curLoopStartTime))
 
-        curHallVolt = hvMM.query("READ?")
-        curSupI = hcMM.query("READ?")
+                data[str(emV)]["time"].append(timeOnCurSupLoop)
+                data[str(emV)]["supplyVolt"].append(curSupVolt)
+                data[str(emV)]["supplyCurr"].append(curSupCurr)
+                data[str(emV)]["hallVolt"].append(curHallVolt)
+                timePassed += measurementInterval
+                timeOnCurSupLoop += measurementInterval
+                timeLeft -= measurementInterval
 
-        liveReadings = {
-            'Electromagnet Voltage': curEMVolt,
-            'Supply Voltage': curSupVolt,
-            'Supply Current': curSupI,
-            'Hall Voltage': curHallVolt,
-            'Time Elapsed': str(time.strftime("%M:%S", time.gmtime(timePassed))),
-            'Time Remaining': str(time.strftime("%M:%S", time.gmtime(timeLeft)))
-        }
-        clearAndDrawOutputs(liveReadings)
+                liveReading = {
+                    "Em. Voltage": emV,
+                    "Supply Curr.": curSupCurr,
+                    "Supply Volt.": curSupVolt,
+                    "Hall Volt.": curHallVolt,
+                    "Time on Current EM Volt.": timeOnCurSupLoop,
+                    "Time Elapsed": timePassed,
+                    "Time Left": timeLeft
+                }
 
-        data["time"].append(timePassed)
-        data["emVolt"].append(float(curEMVolt))
-        data["supplyVolt"].append(float(curSupVolt))
-        data["supplyCurr"].append(float(curSupI))
-        data["hallVolt"].append(float(curHallVolt))
+                clear_output(wait=True)
+                draw3DHELabGraphs(data)
+                showLiveReadings(liveReading)
 
-        timePassed += measurementInterval
-        timeLeft -= measurementInterval
-        curLoopCount += 1
+                curSupVolt += supVoltIncrement
+                curLoopStartTime = time.time()
 
-        try:
-            time.sleep(measurementInterval - (time.time()-loopStartTime))
-        except ValueError:
-            print("\x1b[;43m Instrument took too long to respond. \x1b[;43m")
-            print("This could be because your measurement interval is too short.")
-            print("Try increasing your measurement interval to 1 second or more")
-            raise Exception("Instrument took too long to respond")
-        except:
-            raise
+            curEMCurr = emPS.query("IOUT1?")
+            if float(curEMCurr) > maxEMCurr:
+                raise Warning("Electromagnet current is too high. Current before cut off:", str(curEMCurr))
 
+            time.sleep(timeBetweenEMVChange)
+            timeLeft -= timeBetweenEMVChange
 
+        setPSCurr(0.000, emPS)
+        setPSVolt(0.000, emPS)
+        setPSCurr(0.000, hcPS)
+        setPSVolt(0.000, hcPS)
+        print("The power supplies have been reset.")
 
-
-
-
-
-
+    except VisaIOError:
+        print("\x1b[43m IMMEDIATELY SET ALL THE POWER SUPPLY VOLTAGES TO 0 \x1b[m;")
+        print("Could not complete the full experiment")
+        raise
+    except:
+        setPSCurr(0.000, emPS)
+        setPSVolt(0.000, emPS)
+        setPSCurr(0.000, hcPS)
+        setPSVolt(0.000, hcPS)
+        print("The power supplies have been reset.")
+        print("\x1b[43m Could not complete the full experiment \x1b[m;")
+        raise
 
     print("Data collection completed.")
 
-    time.sleep(0.2)
-    emPS.write("ISET1:0.000")
-    hcPS.write("ISET1:0.000")
-    emPS.write("VSET1:0.000")
-    hcPS.write("VSET1:0.000")
-
-    print("The power supplies have been reset.")
-
-    for key in data.keys():
-        data[key] = np.array(data[key])
+    for emV in data.keys():
+        for key in data[emV].keys():
+            if type(data[emV][key]) is list:
+                data[emV][key] = np.array(data[emV][key])
 
     return data

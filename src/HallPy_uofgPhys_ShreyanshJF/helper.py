@@ -1,4 +1,5 @@
 import os
+import time
 
 import numpy as np
 from IPython.core.display import clear_output
@@ -67,8 +68,7 @@ def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False)
         print("\x1b[;43m        plugging in the " + instType + "(s).                          \x1b[m")
 
 
-def clearAndDrawOutputs(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics Lab'):
-    clear_output(wait=True)
+def showLiveReadings(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics Lab'):
     displayItems = []
     width = 900
     if g1 != 0 or g2 != 0 or g3 != 0 or g4 != 0:
@@ -174,6 +174,16 @@ def clearAndDrawOutputs(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics La
             os.remove('tempImg.jpeg')
 
         display(widgets.VBox(finalDisplayStack))
+
+
+def setPSVolt(volt, inst, channel=1, instSleepTime=0.1):
+    inst.write("VSET" + str(int(channel)) + ":" + str(volt))
+    time.sleep(instSleepTime)
+
+
+def setPSCurr(volt, inst, channel=1, instSleepTime=0.1):
+    inst.write("ISET" + str(int(channel)) + ":" + str(volt))
+    time.sleep(instSleepTime)
 
 
 __all__ = [reconnectInstructions, sortArrByKey]
