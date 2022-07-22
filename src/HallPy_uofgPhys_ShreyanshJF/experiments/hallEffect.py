@@ -116,7 +116,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     inGui = True
 
     maxEMCurr = 0.700
-    maxSupCurr = 0.001
+    maxSupCurr = 0.0001
 
     # TO-D0: Add emergency experiment stop for max current
 
@@ -227,7 +227,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 setPSVolt(curSupVolt, hcPS)
                 curSupCurr = float(hcMM.query("READ?"))
                 curHallVolt = float(hvMM.query("READ?"))
-                if float(curSupVolt) > maxSupCurr:
+                if float(curSupCurr) > maxSupCurr:
                     raise Warning("Supply current was too high. Current before cut off: " + str(curSupCurr))
 
                 curLoopEndTime = time.time()
