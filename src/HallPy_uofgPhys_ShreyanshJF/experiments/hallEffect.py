@@ -4,10 +4,12 @@ import numpy as np
 from IPython.core.display import clear_output
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
+# Important import
+from mpl_toolkits.mplot3d import Axes3D
 from pyvisa import VisaIOError
 
-from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt
 from .__init__ import getAndSetupExpInsts
+from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt
 
 requiredEquipment = {
     "Power Supply": [
@@ -69,8 +71,6 @@ def exampleExpCode():
 
 
 def draw3DHELabGraphs(dataToGraph):
-    # TO-DO
-    # Add live time dependent graph
     fig = plt.figure(figsize=(7, 7))
     ax = fig.gca(projection='3d')
 
