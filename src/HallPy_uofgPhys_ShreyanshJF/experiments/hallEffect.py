@@ -99,12 +99,11 @@ def draw3DHELabGraphs(data):
     verts = []
     for emV in emVsWithData:
         if len(dataToGraph[emV]['time']) > 0:
+            dataToGraph[emV][toGraphOnX].append(dataToGraph[emV][toGraphOnX][-1])
+            dataToGraph[emV][toGraphOnY].append(dataToGraph[emV][toGraphOnY][0])
             verts.append(list(zip(np.array(dataToGraph[emV][toGraphOnX]) * dataScaling[toGraphOnX],
                                   np.array(dataToGraph[emV][toGraphOnY]) * dataScaling[toGraphOnY]
                                   )))
-
-    for xySet in verts:
-        xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], xySet[0][1]))
 
     faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(list(dataToGraph.keys()))))
     poly = PolyCollection(verts, facecolors=faceColours, alpha=0.75)
@@ -125,7 +124,7 @@ def draw3DHELabGraphs(data):
     ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
     ax.set_ylabel("Electromagnet Volt. (V)", fontsize=14, labelpad=10)
     ax.set_yticks([float(V) for V in emVsWithData])
-    ax.azim = -60
+    ax.azim = -80
     ax.elev = 15
     ax.set(xlim=(xMin, xMax),
            zlim=(yMin, yMax),
@@ -233,21 +232,22 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     setPSCurr(0.010, hcPS)
     setPSVolt(0.000, hcPS)
 
-    timeBetweenEMVChange = 2
+    timeBetweenEMVChange = 2.0
     sweepDur = measurementInterval * dataPointsPerSupSweep
     startSupVolt = supVoltSweep[0]
     endSupVolt = supVoltSweep[1]
     curSupVolt = startSupVolt
     timePassed = 0.000
-    timeOnCurSupLoop = 0
-    timeLeft = (sweepDur * len(emVolts)) + (timeBetweenEMVChange * (len(emVolts) - 1))
+    timeOnCurSupLoop = 0.000
+    timeLeft = float((sweepDur * len(emVolts)) + (timeBetweenEMVChange * (len(emVolts) - 1)))
 
     try:
         for emV in emVolts:
             curLoopStartTime = time.time()
             setPSVolt(emV, emPS)
+            time.sleep(0.6)
             curEMCurr = float(emPS.query("IOUT1?"))
-            if float(curEMCurr) > maxEMCurr:
+            if curEMCurr > maxEMCurr:
                 raise Warning("Electromagnet current was too high. Current before cut off: " + str(curEMCurr))
 
             data[str(emV)]["emCurr"] = curEMCurr
@@ -271,13 +271,14 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 timeLeft -= measurementInterval
 
                 liveReading = {
-                    "Em. Voltage": emV,
-                    "Supply Curr.": curSupCurr,
-                    "Supply Volt.": curSupVolt,
-                    "Hall Volt.": curHallVolt,
-                    "Time on Current EM Volt.": timeOnCurSupLoop,
-                    "Time Elapsed": timePassed,
-                    "Time Left": timeLeft
+                    "EM Volt.  (V)": np.round(emV, decimals=3),
+                    "EM Curr. (I)": np.round(curEMCurr, decimals=3),
+                    "Supply Curr. (\u03bcA)": np.round((curSupCurr * 1000000), decimals=3),
+                    "Supply Volt. (V)": np.round(curSupVolt, decimals=3),
+                    "Hall Volt. (mV)": np.round((curHallVolt * 1000), decimals=3),
+                    "Time on Current EM Volt. (s)": timeOnCurSupLoop,
+                    "Time Elapsed (s)": timePassed,
+                    "Time Left (s)": timeLeft
                 }
 
                 clear_output(wait=True)
@@ -292,7 +293,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 raise Warning("Electromagnet current is too high. Current before cut off:", str(curEMCurr))
 
             curSupVolt = startSupVolt
-            time.sleep(timeBetweenEMVChange)
+            time.sleep(timeBetweenEMVChange - 0.6)
             timeLeft -= timeBetweenEMVChange
 
         setPSCurr(0.000, emPS)
