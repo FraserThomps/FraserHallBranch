@@ -76,36 +76,40 @@ def draw3DHELabGraphs(dataToGraph):
 
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallVolt"
-    verts = []
+    emVsWithData = []
     for emV in list(dataToGraph.keys()):
+        if len(dataToGraph[emV]['time']) > 0:
+            emVsWithData.append(emV)
+
+    verts = []
+    for emV in emVsWithData:
         if len(dataToGraph[emV]['time']) > 0:
             verts.append(list(zip(dataToGraph[emV][toGraphOnX], dataToGraph[emV][toGraphOnY])))
 
     for xySet in verts:
-        # xySet.insert(0, (xySet[0][0], 0))
         xySet.insert(len(xySet), (xySet[len(xySet) - 1][0], xySet[0][1]))
 
     faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(list(dataToGraph.keys()))))
     poly = PolyCollection(verts, facecolors=faceColours, alpha=0.75)
 
-    ax.add_collection3d(poly, zs=[float(V) for V in dataToGraph.keys()], zdir='y')
+    ax.add_collection3d(poly, zs=[float(V) for V in emVsWithData], zdir='y')
 
-    xMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnX])
-    xMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnX])
-    yMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnY])
-    yMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][toGraphOnY])
+    xMax = np.amax(dataToGraph[emVsWithData[-1]][toGraphOnX])
+    xMin = np.amin(dataToGraph[emVsWithData[-1]][toGraphOnX])
+    yMax = np.amax(dataToGraph[emVsWithData[-1]][toGraphOnY])
+    yMin = np.amin(dataToGraph[emVsWithData[-1]][toGraphOnY])
     ax.set_xlabel('Supply Current', fontsize=14, labelpad=10)
     ax.set_zlabel('Hall Voltage', fontsize=14, labelpad=10)
     ax.set_ylabel('Electromagnet Voltage', fontsize=14, labelpad=10)
-    ax.set_yticks([float(V) for V in dataToGraph.keys()])
+    ax.set_yticks([float(V) for V in emVsWithData])
     ax.azim = -60
     ax.elev = 15
     if len(list(dataToGraph.keys())) <= 2:
         ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin([float(V) for V in dataToGraph.keys()]) - 2, np.amax([float(V) for V in dataToGraph.keys()]) + 2))
+               ylim=(np.amin([float(V) for V in emVsWithData]) - 2, np.amax([float(V) for V in emVsWithData]) + 2))
     else:
         ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin([float(V) for V in dataToGraph.keys()]), np.amax([float(V) for V in dataToGraph.keys()])))
+               ylim=(np.amin([float(V) for V in emVsWithData]), np.amax([float(V) for V in emVsWithData])))
     plt.show()
 
 
