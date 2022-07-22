@@ -76,10 +76,29 @@ def draw3DHELabGraphs(dataToGraph):
 
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallVolt"
+
+    dataScaling = {
+        "time": 1,
+        "supplyVolt": 1,
+        "supplyCurr": 1000000,
+        "hallVolt": 1000,
+    }
+    dataGraphLabels = {
+        "time": "Time (s)",
+        "supplyVolt": "Supply Voltage (V)",
+        "supplyCurr": "Supply Curr. (\u03bcA)",
+        "hallVolt": "Hall Voltage (mV)",
+    }
+
     emVsWithData = []
     for emV in list(dataToGraph.keys()):
         if len(dataToGraph[emV]['time']) > 0:
             emVsWithData.append(emV)
+
+    for emV in emVsWithData:
+        if type(dataToGraph[emV][toGraphOnX]) is list:
+            dataToGraph[emV][toGraphOnX] = np.array(dataToGraph[emV][toGraphOnX]) * dataScaling[toGraphOnX]
+            dataToGraph[emV][toGraphOnY] = np.array(dataToGraph[emV][toGraphOnY]) * dataScaling[toGraphOnY]
 
     verts = []
     for emV in emVsWithData:
@@ -94,22 +113,25 @@ def draw3DHELabGraphs(dataToGraph):
 
     ax.add_collection3d(poly, zs=[float(V) for V in emVsWithData], zdir='y')
 
-    xMax = np.amax(dataToGraph[emVsWithData[-1]][toGraphOnX])
-    xMin = np.amin(dataToGraph[emVsWithData[-1]][toGraphOnX])
-    yMax = np.amax(dataToGraph[emVsWithData[-1]][toGraphOnY])
-    yMin = np.amin(dataToGraph[emVsWithData[-1]][toGraphOnY])
-    ax.set_xlabel('Supply Current', fontsize=14, labelpad=10)
-    ax.set_zlabel('Hall Voltage', fontsize=14, labelpad=10)
-    ax.set_ylabel('Electromagnet Voltage', fontsize=14, labelpad=10)
+    allXVals = []
+    allYVals = []
+    for emV in emVsWithData:
+        allXVals.extend(dataToGraph[emV][toGraphOnX])
+        allYVals.extend(dataToGraph[emV][toGraphOnY])
+
+    xMax = np.amax(allXVals)
+    xMin = np.amin(allXVals)
+    yMax = np.amax(allYVals)
+    yMin = np.amin(allYVals)
+    ax.set_xlabel(dataGraphLabels[toGraphOnX], fontsize=14, labelpad=10)
+    ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
+    ax.set_ylabel("Electromagnet Voltage (V)", fontsize=14, labelpad=10)
     ax.set_yticks([float(V) for V in emVsWithData])
     ax.azim = -60
     ax.elev = 15
-    if len(list(dataToGraph.keys())) <= 2:
-        ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin([float(V) for V in emVsWithData]) - 2, np.amax([float(V) for V in emVsWithData]) + 2))
-    else:
-        ax.set(xlim=(xMin, xMax), zlim=(yMin, yMax),
-               ylim=(np.amin([float(V) for V in emVsWithData]), np.amax([float(V) for V in emVsWithData])))
+    ax.set(xlim=(xMin, xMax),
+           zlim=(yMin, yMax),
+           ylim=(np.amin([float(V) for V in emVsWithData]) - 2, np.amax([float(V) for V in emVsWithData]) + 2))
     plt.show()
 
 
