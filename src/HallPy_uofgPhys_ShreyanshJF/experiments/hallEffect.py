@@ -85,7 +85,7 @@ def draw3DHELabGraphs(dataToGraph):
     faceColours = plt.get_cmap('bone_r')(np.linspace(0.25, 1, len(list(dataToGraph.keys()))))
     poly = PolyCollection(verts, facecolors=faceColours, alpha=0.75)
 
-    ax.add_collection3d(poly, zs=list(dataToGraph.keys()), zdir='y')
+    ax.add_collection3d(poly, zs=[float(V) for V in dataToGraph.keys()], zdir='y')
 
     xMax = np.amax(dataToGraph[list(dataToGraph.keys())[-1]][0])
     xMin = np.amin(dataToGraph[list(dataToGraph.keys())[-1]][0])
