@@ -11,6 +11,7 @@ from pyvisa import VisaIOError
 from .__init__ import getAndSetupExpInsts
 from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt
 
+
 requiredEquipment = {
     "Power Supply": [
         {"purpose": "Electromagnet", "var": "emPS"},
@@ -124,7 +125,7 @@ def draw3DHELabGraphs(dataToGraph):
     ax.set_zlabel(dataGraphLabels[toGraphOnY], fontsize=14, labelpad=10)
     ax.set_ylabel("EM Volt. (V)", fontsize=14, labelpad=10)
     ax.set_yticks([float(V) for V in emVsWithData])
-    ax.azim = -80
+    ax.azim = -105
     ax.elev = 10
     ax.set(xlim=(xMin, xMax),
            zlim=(yMin, yMax),
@@ -231,7 +232,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     timeBetweenEMVChange = 2.0
     sweepDur = measurementInterval * dataPointsPerSupSweep
     startSupVolt = supVoltSweep[0]
-    endSupVolt = supVoltSweep[1]
+    endSupVolt = (supVoltSweep[1] * 1.01)
     curSupVolt = startSupVolt
     timePassed = 0.000
     timeOnCurSupLoop = 0.000

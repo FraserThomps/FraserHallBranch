@@ -10,10 +10,12 @@ from IPython.display import display
 from .constants import supportedInstruments
 
 
+# Helper function to find all objects with the same key value in an array of objects
 def sortArrByKey(arr, key, val):
     return list(filter(lambda d: d[str(key)] == val, arr))
 
 
+# Helper function to dispaly reconnection instructions
 def reconnectInstructions(inGui=False):
     print("\x1b[;43m NOTE : If instruments aren't recognised, follow instructions below: \x1b[m")
     print("  - Disconnect USB / USB hub from PC")
@@ -29,6 +31,7 @@ def reconnectInstructions(inGui=False):
     print("*Follow instructions in provided order.")
 
 
+# Helper function to get a count instruments by type of instrument
 def getInstTypeCount(instruments):
     instTypeCount = supportedInstruments.copy()
 
@@ -40,6 +43,7 @@ def getInstTypeCount(instruments):
     return instTypeCount
 
 
+# Helper function to display information before raising instrument not found error
 def _requiredInstrumentNotFound(instType, inGui=False):
     print("\x1b[;41m No " + instType + " is connected. \x1b[m")
     print("Please plug in a " + instType + " via USB to the PC.")
@@ -51,6 +55,7 @@ def _requiredInstrumentNotFound(instType, inGui=False):
               + instType + ". \x1b[m")
 
 
+# Helper function to display information before raising not enough instruments of a single type error
 def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
     instTypeCount = getInstTypeCount(instruments)
     if instTypeCount[instType] == 0:
@@ -68,6 +73,8 @@ def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False)
         print("\x1b[;43m        plugging in the " + instType + "(s).                          \x1b[m")
 
 
+# Helper function to display information from a dictionary where the key is the name of the reading and the value is
+# the current reading
 def showLiveReadings(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics Lab'):
     displayItems = []
     width = 900

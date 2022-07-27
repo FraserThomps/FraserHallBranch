@@ -50,7 +50,7 @@ def initInstruments(inGui=False):
     See Also
     --------
     + constants.supportedEquipment : Used to classify instrument
-    + HallPy_Teach() : Used to use library with GUI in Jupyter Notebook / Lab
+    + Setup() : Used to use library with GUI in Jupyter Notebook / Lab
 
     Returns
     -------
@@ -144,13 +144,44 @@ def initInstruments(inGui=False):
 
 
 class Setup:
+    """Setting up instruments with GUI in jupyter python.
+
+        Class uses initInstruments and individual experiments setup functions to setup the instruments for performing
+        selected experiment. Subsequently, user will have to use classInstance.expInsts object in the doExpeiment()
+        function to perform the given experiment.
+
+        See Also
+        --------
+        + initInstruments() : Setup class uses this function to find all connected instruments
+        + hallEffect.doExperiment() :  Used  after Setup() class initiation - Example doExperiment() function
+        + hallEffect.setup() : Used in the Setup() class to setup selected experiment from the GUI
+
+        Notes
+        -------
+        Use classInstanceName.expInsts in doExperiment() function to perform given experiment.
+
+        Example:
+
+        -> exp = Setup()
+        -> data = experiment.doExperiment(exp.expInsts)
+
+        Same as doing the following (Without using Jupyter GUI):
+
+        -> insts = initInstruments()
+        -> expInsts = experiment.setup(insts)
+        -> data = experiment.doExperiment(expInsts)
+
+        use
+        """
 
     def __init__(self, btn=None):
 
+        # Getting all experiments in the library
         expChoices = []
         for experiment in allExperiments:
             expChoices.append((experiment.expName, experiment))
 
+        # Setting up UI buttons and dropdowns for later use
         self.restartSetupBtn = widgets.Button(
             description="Restart Setup",
             icon="play",
@@ -159,18 +190,23 @@ class Setup:
         self.pickExpDropdown = widgets.Dropdown(options=expChoices, disabled=False)
         self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
         self.submitBtn.on_click(self.handle_pickExpSubmit)
+
+        # Objects and functions to be used after class instance is setup
         self.expInsts = None
         self.doExperiment = None
 
         clear_output()
         self.instruments = initInstruments(inGui=True)
 
+        # Getting user input for experiment choice
         print(" ")
         print("Choose experiment to perform")
 
         # noinspection PyTypeChecker
         display(widgets.VBox([self.pickExpDropdown, self.submitBtn]))
 
+    # Getting serial assignment : what instrument is performing what function based on requiredInstruments object
+    # defined in the experiment file
     def getUserSerialAssignment(self, expSetupFunc, expReq, availableInsts, expName):
         serials = {}
         serialDropdownsByType = {}
@@ -227,22 +263,23 @@ class Setup:
         assignSerialsBtn.on_click(handle_submitSerials)
         display(assignSerialsBtn)
 
+    # performing the experiment.setup() function for selected experiment.
     def assignInstsAndSetupExp(self, expSetupFunc, expReq, availableInsts, expName, pickedSerials=None):
-
         if pickedSerials is None:
             pickedSerials = {}
 
         try:
+            # If serials are assigned, setting up experiment instruments with serials
             if len(pickedSerials.keys()) > 0:
                 expInsts = expSetupFunc(instruments=availableInsts, serials=pickedSerials, inGui=True)
             else:
                 expInsts = expSetupFunc(instruments=availableInsts, inGui=True)
 
-            print("Returning Now")
             return expInsts
 
         except Exception as errMsg:
             errMsg = str(errMsg).lower()
+            # if experiment requires multiple of one type of instrument getting serial assignment from user
             if "missing serial" in errMsg:
                 self.getUserSerialAssignment(
                     expSetupFunc=expSetupFunc,
@@ -250,6 +287,8 @@ class Setup:
                     availableInsts=availableInsts,
                     expName=expName
                 )
+
+            # Checking if error is for missing required instruments.
             elif "connected" in errMsg:
                 print('')
                 print("All instruments required for", expName)
@@ -262,21 +301,22 @@ class Setup:
                 self.restartSetupBtn.on_click(Setup)
                 # noinspection PyTypeChecker
                 display(widgets.VBox([self.restartSetupBtn]))
+
+            # Raising all other errors
             else:
                 raise
 
+    # Submit handler after picking experiment.
     def handle_pickExpSubmit(self, submitBtnAfterClick=None):
-
         clear_output()
-        self.pickExpDropdown.close = True
-        submitBtnAfterClick.close = True
+
         expSetupFunc = self.pickExpDropdown.value.setup
         expReq = self.pickExpDropdown.value.requiredEquipment
         expName = self.pickExpDropdown.label
-
         # TO-DO Check this
         # self.doExperiment = self.pickExpDropdown.value.doExperiment
-
+        self.pickExpDropdown.close = True
+        submitBtnAfterClick.close = True
         try:
             self.expInsts = self.assignInstsAndSetupExp(
                 expName=expName,
