@@ -27,7 +27,7 @@ import time
 
 from pyvisa import VisaIOError
 
-from ..helper import _requiredInstrumentNotFound, _notEnoughReqInstType, sortArrByKey
+from ..helper import requiredInstrumentNotFound, notEnoughReqInstType, filterArrByKey
 from ..helper import reconnectInstructions, getInstTypeCount
 
 
@@ -57,10 +57,10 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
 
     for instType in requiredEquipment.keys():
         if instType not in instTypeCount.keys():
-            _requiredInstrumentNotFound(instType, inGui)
+            requiredInstrumentNotFound(instType, inGui)
             raise Exception("No " + instType + " connected")
         elif instTypeCount[instType] < len(requiredEquipment[instType]):
-            _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui)
+            notEnoughReqInstType(instType, requiredEquipment, instruments, inGui)
             raise Exception("Not enough " + instType + "(s) connected. "
                             + str(len(requiredEquipment[instType])) + "required.")
 
@@ -76,7 +76,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                     instNeededObj["config"] = instNeeded["config"]
 
             if instTypeCount[instType] == 1 and len(requiredEquipment[instType]) == 1:
-                instNeededObj["res"] = sortArrByKey(instruments, "type", instType)[0]['inst']
+                instNeededObj["res"] = filterArrByKey(instruments, "type", instType)[0]['inst']
             elif instNeeded["var"] not in serials.keys() and instTypeCount[instType] > 1:
                 if not inGui:
                     print(
@@ -92,7 +92,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
                     print("Serial number entered: " + serial)
                     print("Found Instruments | " + instType + "(s) : ")
                     print("Available " + instType + "(s): ")
-                    for inst in sortArrByKey(instruments, "type", instType):
+                    for inst in filterArrByKey(instruments, "type", instType):
                         print("   " + inst["name"].replace("\n", " "))
                         print(" ")
                     raise Exception("No instruments with given serial number found.")

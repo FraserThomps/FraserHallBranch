@@ -29,7 +29,7 @@ from IPython.display import clear_output
 import ipywidgets as widgets
 
 from .constants import supportedInstruments, serialRegex
-from .helper import reconnectInstructions, getInstTypeCount, sortArrByKey
+from .helper import reconnectInstructions, getInstTypeCount, filterArrByKey
 
 allExperiments = [
     curieWeiss,
@@ -38,7 +38,7 @@ allExperiments = [
 ]
 
 
-def initInstruments(inGui=False):
+def initInstruments(inGui: bool =False):
     """Initializing and recognising connected equipment.
 
     Function does the setup for any of the experiments which use this HallPy_Teach. It recognises the connected
@@ -47,6 +47,10 @@ def initInstruments(inGui=False):
 
     The list of supported instruments is in the constants' module (mentioned in the See Also section).
 
+    Parameters
+    ----------
+    inGui: Bool to cehck if library is being used in jupyter python or the terminal
+
     See Also
     --------
     + constants.supportedEquipment : Used to classify instrument
@@ -54,8 +58,8 @@ def initInstruments(inGui=False):
 
     Returns
     -------
-    Array of objects containing information about the connected instruments
-    Example of 2 found instruments:
+    + Array of objects containing information about the connected instruments
+    + Example of 2 found instruments:
     [
         {
             'inst': USBInstrument, #PyVisa Object: to be used to communicate with instrument eg.:
@@ -219,7 +223,7 @@ class Setup:
             if len(expReq[instType]) > 1:
                 print("Assign", instType + "(s)")
                 availableSerials = []
-                for inst in sortArrByKey(availableInsts, "type", instType):
+                for inst in filterArrByKey(availableInsts, "type", instType):
                     regex = ""
                     for instPartialName in serialRegex.keys():
                         if instPartialName in inst["name"]:

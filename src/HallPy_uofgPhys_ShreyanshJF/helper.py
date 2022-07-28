@@ -10,13 +10,40 @@ from IPython.display import display
 from .constants import supportedInstruments
 
 
-# Helper function to find all objects with the same key value in an array of objects
-def sortArrByKey(arr, key, val):
+def filterArrByKey(arr, key, val):
+    """Helper function to find all objects with the same key value in an array of objects
+
+    Parameters
+    ----------
+    arr : list of object
+        List of similar objects to filter from
+    key : str
+        Key to filter by
+    val : any
+        Key value to filter for
+
+    Returns
+    -------
+    list of object
+        List of objects where key of given object matches value provided in args
+
+    """
     return list(filter(lambda d: d[str(key)] == val, arr))
 
 
-# Helper function to dispaly reconnection instructions
 def reconnectInstructions(inGui=False):
+    """Helper function to dispaly reconnection instructions
+
+    Parameters
+    ----------
+    inGui : bool, default=False
+        To check weather library is being run in the GUI or in Jupyter Python
+
+    Returns
+    -------
+    None
+        Reconnection instructions to output (terminal if not in Jupyter)
+    """
     print("\x1b[;43m NOTE : If instruments aren't recognised, follow instructions below: \x1b[m")
     print("  - Disconnect USB / USB hub from PC")
     print("  - Restart kernel (From top menu : Kernel > Restart & Clear Outputs)")
@@ -31,20 +58,50 @@ def reconnectInstructions(inGui=False):
     print("*Follow instructions in provided order.")
 
 
-# Helper function to get a count instruments by type of instrument
 def getInstTypeCount(instruments):
+    """Helper function to get a count instruments by type of instrument
+
+    Parameters
+    ----------
+    instruments : list of object
+        List of instruments objects defined in initInstruments()
+
+    See Also
+    --------
+    + initInstruments()
+
+    Returns
+    -------
+    object
+        object with key as type of instrument and value as the number of type connected
+
+    """
     instTypeCount = supportedInstruments.copy()
 
     for instrumentType in instTypeCount:
-        instTypeCount[instrumentType] = np.size(sortArrByKey(instruments, 'type', instrumentType))
+        instTypeCount[instrumentType] = np.size(filterArrByKey(instruments, 'type', instrumentType))
 
-    instTypeCount['Unknown'] = np.size(sortArrByKey(instruments, 'type', 'Unknown'))
+    instTypeCount['Unknown'] = np.size(filterArrByKey(instruments, 'type', 'Unknown'))
 
     return instTypeCount
 
 
-# Helper function to display information before raising instrument not found error
-def _requiredInstrumentNotFound(instType, inGui=False):
+def requiredInstrumentNotFound(instType, inGui=False):
+    """Helper function to display information before raising instrument not found error
+
+    Parameters
+    ----------
+    instType : str
+        Type of instrument which is required
+    inGui : bool, default=False
+        To check weather library is being run in the GUI or in Jupyter Python
+
+    Returns
+    -------
+    None
+        Output to jupyter python or terminal stating required instrument type and other information
+
+    """
     print("\x1b[;41m No " + instType + " is connected. \x1b[m")
     print("Please plug in a " + instType + " via USB to the PC.")
     if inGui:
@@ -55,8 +112,26 @@ def _requiredInstrumentNotFound(instType, inGui=False):
               + instType + ". \x1b[m")
 
 
-# Helper function to display information before raising not enough instruments of a single type error
-def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
+def notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
+    """Helper function to display information before raising not enough instruments of a single type error
+
+    Parameters
+    ----------
+    instType : str
+        Type of instrument which is in insufficient quantity
+    requiredEquipment : object
+        Required equipment list from experiment.py file
+    instruments : list of object
+        List of instrument objects (see initInstruments() docs)
+    inGui : bool, default=False
+        To check weather library is being run in the GUI or in Jupyter Python
+
+    Returns
+    -------
+    None
+        Output to jupyter python or terminal stating required instrument type and other information
+
+    """
     instTypeCount = getInstTypeCount(instruments)
     if instTypeCount[instType] == 0:
         print("\x1b[;41m No " + instType + " found. \x1b[m")
@@ -73,12 +148,54 @@ def _notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False)
         print("\x1b[;43m        plugging in the " + instType + "(s).                          \x1b[m")
 
 
-# Helper function to display information from a dictionary where the key is the name of the reading and the value is
-# the current reading
-def showLiveReadings(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics Lab'):
+def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
+    """Function to display life readings
+
+    Helper function to display information from a dictionary where the key is the name of the reading and the value is
+    the current reading
+
+    Parameters
+    ----------
+    liveReadings : object
+        Object with key as the name of the live reading (eg.: "Voltage") and value as the live reading (eg.: 20.0V)
+    g1 : object, optional
+        Object with key as matplotlib argument (eg.: title, xlable, xdata) and value of given argument, see notes for
+        more information
+    g2 : object, optional
+        Same as g1
+    g3 : object, optional
+        Same as g1
+    g4 : object, optional
+        Same as g1
+
+    Notes
+    -----
+    Example of liveReadings object:
+        {
+            'Hall Volt. (V)': 1.00,\n
+            'Supply Curr. (mA)': 0.10,\n
+            'Time Left (s)': 10\n
+        }
+    Example g1 object:
+        {
+            'title':'Some Graph 1',\n
+            'xlim': (0,3.16*2),\n
+            'ylim': (-1.1,1.1),\n
+            'xdata': np.array(range(0, 3145*2, 1))/(curTime+1),\n
+            'ydata': np.sin(np.array(range(0, 3145*2, 1))/10),\n
+            'xlabel': 'Radians',\n
+            'ylabel': 'Sin(Radians)'\n
+        }
+
+    Returns
+    -------
+    None
+        Live readings and graphs are printed to jupyter python output
+
+    """
     displayItems = []
     width = 900
-    if g1 != 0 or g2 != 0 or g3 != 0 or g4 != 0:
+    if g1 is not None or g2 is not None or g3 is not None or g4 is not None:
         graphs = [i for i in [g1, g2, g3, g4] if i != 0]
         fig = plt.figure()
         if np.size(graphs) == 1:
@@ -184,13 +301,53 @@ def showLiveReadings(liveReadings, g1=0, g2=0, g3=0, g4=0, gTitle='Physics Lab')
 
 
 def setPSVolt(volt, inst, channel=1, instSleepTime=0.1):
+    """Set Power Supply Voltage
+
+    Function uses pyvisa instrument object to set power supply voltage
+
+    Parameters
+    ----------
+    volt : int or float
+        Voltage value to set
+    inst : object
+        Power supply Pyvisa Object (value of 'res' in the instrument object in initInstruments())
+    channel : int, default=1
+        Channel of the power supply which the voltage is to be set to (usually 1 or 2)
+    instSleepTime : float, default=0.1
+        Time to sleep for inorder to make sure voltage change is applied before carrying on operations
+
+    Returns
+    -------
+    None
+
+    """
     inst.write("VSET" + str(int(channel)) + ":" + str(volt))
     time.sleep(instSleepTime)
 
 
 def setPSCurr(volt, inst, channel=1, instSleepTime=0.1):
+    """Set Power Supply Current
+
+        Function uses pyvisa instrument object to set power supply current
+
+        Parameters
+        ----------
+        volt : int or float
+            Current value to set
+        inst : object
+            Power supply Pyvisa Object (value of 'res' in the instrument object in initInstruments())
+        channel : int, default=1
+            Channel of the power supply which the voltage is to be set to (usually 1 or 2)
+        instSleepTime : float, default=0.1
+            Time to sleep for inorder to make sure current change is applied before carrying on operations
+
+        Returns
+        -------
+        None
+
+        """
     inst.write("ISET" + str(int(channel)) + ":" + str(volt))
     time.sleep(instSleepTime)
 
 
-__all__ = [reconnectInstructions, sortArrByKey]
+__all__ = [reconnectInstructions, filterArrByKey]
