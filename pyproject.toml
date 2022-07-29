@@ -1,6 +1,6 @@
 [project]
 name = "HallPy_UofG_Phys"
-version = "0.0.110"
+version = "0.0.102"
 authors = [
     {name="Shreyansh Fofandi", email="shreyanshjf@gmail.com"},
     {name="Dr Ian MacLaren", email="ian.maclaren@glasgow.ac.uk"},

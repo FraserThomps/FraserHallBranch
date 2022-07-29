@@ -49,7 +49,8 @@ def initInstruments(inGui: bool =False):
 
     Parameters
     ----------
-    inGui: Bool to cehck if library is being used in jupyter python or the terminal
+    inGui: bool, default=False
+        Bool to check if gui is being used (if using Setup() the whole experiment setup process is done via GUI)
 
     See Also
     --------
@@ -164,18 +165,21 @@ class Setup:
         -------
         Use classInstanceName.expInsts in doExperiment() function to perform given experiment.
 
-        Example:
+        Example
+        ------
+        In jupyter python:
 
-        -> exp = Setup()
-        -> data = experiment.doExperiment(exp.expInsts)
+        >>> import HallPy_uofgPhys_ShreyanshJF as Teach
+        >>> exp = Teach.Setup()
+        >>> data = exp.doExperiment(exp.expInsts)
 
-        Same as doing the following (Without using Jupyter GUI):
+        Same as doing the following:
 
-        -> insts = initInstruments()
-        -> expInsts = experiment.setup(insts)
-        -> data = experiment.doExperiment(expInsts)
-
-        use
+        >>> import HallPy_uofgPhys_ShreyanshJF.experiments.hallEffect as Experiment
+        >>> import HallPy_uofgPhys_ShreyanshJF as Teach
+        >>> insts = Teach.initInstruments()
+        >>> expInsts = Experiment.setup(insts)
+        >>> data = Experiment.doExperiment(expInsts)
         """
 
     def __init__(self, btn=None):

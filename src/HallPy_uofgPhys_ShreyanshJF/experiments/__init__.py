@@ -32,9 +32,24 @@ from ..helper import reconnectInstructions, getInstTypeCount
 
 
 def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, inGui=False):
-    """Picking out and setting up connected equipment specific to the lab being performed.
+    """Picking out and setting up connected equipment specific selected experiment.
 
+    Parameters
+    ----------
+    requiredEquipment : object
+        Required equipment list from experiment.py file
+    instruments : list of objects
+        List of instrument objects (see initInstruments() docs)
+    serials : object
+        Object with key as var name set in requiredEquipment and value as selected serial number (string)
+    inGui : bool, default=False
+        To check weather library is being run in the GUI or in Jupyter Python
 
+    Returns
+    -------
+    object
+        Object with the instruments for the experiment. Key same as var name set in requiredEquipment in epeximent.py
+        file and value as instrument object (see initInstruments() docs for object details)
 
     """
     if serials is None:
