@@ -5,7 +5,9 @@ HallPy_Teach: A Python package to aid physics students in performing lab activit
 Documentation is available in the docstrings and online at:
 https://hallPy.fofandi.dev.
 
-Description ----------- HallPy_Teach uses the pyvisa package to communicate with lab equipment. It is intended to be
+Description
+-----------
+HallPy_Teach uses the pyvisa package to communicate with lab equipment. It is intended to be
 used as an CAI (Computer Assisted Instruction) library to let students get setup with labs in a straight forward way.
 It exposes functions which can be used to develop any type of computer operated lab if the lab equipment operates on
 the VISA specifications and is supported by pyvisa.
@@ -32,9 +34,9 @@ from .constants import supportedInstruments, serialRegex
 from .helper import reconnectInstructions, getInstTypeCount, filterArrByKey
 
 allExperiments = [
-    curieWeiss,
+    # curieWeiss,
     hallEffect,
-    test
+    # test
 ]
 
 

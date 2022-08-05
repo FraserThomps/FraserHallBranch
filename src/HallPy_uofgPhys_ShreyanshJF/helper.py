@@ -1,4 +1,5 @@
 import os
+import pickle
 import time
 
 import numpy as np
@@ -350,4 +351,52 @@ def setPSCurr(volt, inst, channel=1, instSleepTime=0.1):
     time.sleep(instSleepTime)
 
 
+def clearFileAndSaveData(data, fileNameWithoutExt):
+    """Save data to .p file
+
+    Saves provided data to file in current directory
+    Parameters
+    ----------
+    data: any
+    fileNameWithoutExt: str
+        File name without extention. It will be saved as a .p file
+
+    Returns
+    -------
+    None
+
+    See Also
+    --------
+    + getDataFromFile
+    """
+    fileName = fileNameWithoutExt + '.p'
+    if os.path.exists(fileName):
+        os.remove(fileName)
+    file = open(fileName, 'wb')
+    pickle.dump(data, file)
+
+
+def getDataFromFile(fileNameWithExt):
+    """Get data from file
+
+    Gets pickled data from file
+
+    Parameters
+    ----------
+    fileNameWithExt: str
+        Name of file with extension.
+
+    Returns
+    -------
+    any
+        Returns any data within the file
+
+    See Also
+    --------
+    + saveDataToFile()
+
+    """
+    file = open(fileNameWithExt, 'rb')
+    dataFromFile = pickle.load(file)
+    return dataFromFile
 __all__ = [reconnectInstructions, filterArrByKey]

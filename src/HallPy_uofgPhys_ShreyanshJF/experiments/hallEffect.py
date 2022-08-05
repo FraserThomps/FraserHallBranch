@@ -9,8 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from pyvisa import VisaIOError
 
 from .__init__ import getAndSetupExpInsts
-from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt
-
+from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt, clearFileAndSaveData
 
 requiredEquipment = {
     "Power Supply": [
@@ -133,12 +132,17 @@ def draw3DHELabGraphs(dataToGraph):
     plt.show()
 
 
-def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1):
+def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1, dafaFileName=None):
     if expInsts is None:
         expInsts = []
 
     if emVolts is None:
         emVolts = []
+
+    if type(dafaFileName) is not str and dafaFileName is not None:
+        print("\x1b[;41m Please provide valid file name for the data to be saved \x1b[m")
+        raise TypeError("dafaFileName was found to be a " + str(type(dafaFileName)) + "when it is supposed to be a "
+                                                                                      "string")
 
     inGui = True
 
@@ -263,6 +267,9 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 data[str(emV)]["supplyVolt"].append(curSupVolt)
                 data[str(emV)]["supplyCurr"].append(curSupCurr)
                 data[str(emV)]["hallVolt"].append(curHallVolt)
+
+                clearFileAndSaveData(data, dafaFileName)
+
                 timePassed += measurementInterval
                 timeOnCurSupLoop += measurementInterval
                 timeLeft -= measurementInterval
