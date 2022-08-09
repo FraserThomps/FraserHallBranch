@@ -60,8 +60,13 @@ def initInstruments(inGui: bool = False):
 
     Returns
     -------
-    + Array of objects containing information about the connected instruments
-    + Example of 2 found instruments:
+    list[object]
+        Array of objects containing information about the connected instruments
+
+    Examples
+    --------
+    Example of 2 found instruments:
+
     [
         {
             'inst': USBInstrument, #PyVisa Object: to be used to communicate with instrument eg.:
@@ -152,8 +157,8 @@ def initInstruments(inGui: bool = False):
 class Setup:
     """Setting up instruments with GUI in jupyter python.
 
-        Class uses initInstruments and individual experiments setup functions to setup the instruments for performing
-        selected experiment. Subsequently, user will have to use classInstance.expInsts object in the doExpeiment()
+        Class uses initInstruments() and individual experiments setup functions to setup the instruments for performing
+        the selected experiment. Subsequently, user will have to use classInstance.expInsts object in the doExpeiment()
         function to perform the given experiment.
 
         See Also
@@ -170,14 +175,14 @@ class Setup:
         ------
         In jupyter python:
 
-        >>> import HallPy_uofgPhys_ShreyanshJF as Teach
+        >>> import HallPy_Teach as Teach
         >>> exp = Teach.Setup()
         >>> data = exp.doExperiment(exp.expInsts)
 
         Same as doing the following:
 
-        >>> import HallPy_uofgPhys_ShreyanshJF.experiments.hallEffect as Experiment
-        >>> import HallPy_uofgPhys_ShreyanshJF as Teach
+        >>> import HallPy_Teach.experiments.hallEffect as Experiment
+        >>> import HallPy_Teach as Teach
         >>> insts = Teach.initInstruments()
         >>> expInsts = Experiment.setup(insts)
         >>> data = Experiment.doExperiment(expInsts)

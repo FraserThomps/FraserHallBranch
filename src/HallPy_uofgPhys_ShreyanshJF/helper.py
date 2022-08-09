@@ -196,6 +196,8 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
     """
     displayItems = []
     width = 900
+
+    # Checking if graphs need to be shown
     if g1 is not None or g2 is not None or g3 is not None or g4 is not None:
         graphs = [i for i in [g1, g2, g3, g4] if i != 0]
         fig = plt.figure()
@@ -267,6 +269,7 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
         plt.savefig('tempImg.jpeg')
         plt.close(fig)
 
+    # Checking if live readings need to be shown
     if liveReadings != 0:
         displayItems = []
         for i in liveReadings.keys():
@@ -289,6 +292,7 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
                                                  )
                                     )
 
+    # Showing graphs and live readings in correct order
     if liveReadings != 0 or g1 != 0 or g2 != 0 or g3 != 0 or g4 != 0:
         finalDisplayStack = []
         if liveReadings != 0:

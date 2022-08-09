@@ -15,11 +15,34 @@ requiredEquipment = {
         {"purpose": "Temperature", "var": "mm", "config": ["CONF:TCO", "TCO:TYPE T"]}
     ],
 }
+"""Required equipment for the Curie Weiss experiment 
+"""
 
 expName = "Curie Weiss Lab"
+"""Required equipment for the Curie Weiss experiment 
+"""
 
 
 def setup(instruments=None, serials=None, inGui=False):
+    """Setup function for the Curie Weiss experiment
+
+        Mainly handles sending proper errors and guidance to students so that they can do a majority of the troubleshooting.
+        The actual setup is done by the getAndSetupExpInsts() function.
+
+        Parameters
+        ----------
+        instruments: list of object
+            Array of all the available instruments (see initInstruments() docs for more details)
+        serials: object
+            Object with key as 'var' name in requiredEquipment and value as the serial number of the specific instrument to be used for the defied purpose
+        inGui: bool
+            Bool to define if the jupyter python widgets GUI is being used
+
+        Returns
+        -------
+        object
+            Object with keys as the 'var' name set in the requiredEquipment object and values as 'inst' objects (see initInstruments() docs)
+        """
     if serials is None:
         serials = {}
     if instruments is None:
@@ -54,17 +77,52 @@ def setup(instruments=None, serials=None, inGui=False):
 
 
 def exampleExpCode():
+    """Prints a demo of how the student should use the doExperiment() function for the Curie Weiss lab
+
+        Returns
+        -------
+        None
+        """
     print("Example: ")
     print("   1 | data = hp.doExperiment(")
     print("   2 |          expInsts=hp.expInsts,")
-    print("   3 |          emVolts=[10, 20, 30],")
-    print("   4 |          hallSweep=(15, 30),")
-    print("   5 |          dataPointsPerSupSweep=30,")
-    print("   5 |          measurementInterval=1,")
-    print("   5 |        )")
+    print("   3 |          exptLength=50,")
+    print("   4 |          measurementInterval=5,")
+    print("   5 |          dataFileName='curieWeissData'")
+    print("   6 |        )")
 
 
 def doExperiment(expInsts=None, exptLength=None, measurementInterval=5, dataFileName=None):
+    """Function to perform the Curie Weiss experiment
+
+    Parameters
+    ----------
+    expInsts : object
+        Object with keys as the 'var' name set in requiredEquipment object and the value as the 'inst' object of the
+        corresponding equipment (see initInstruments() for the 'inst' object)
+    exptLength : int
+        Length of time the experiment is supposed to run for in minutes.
+    measurementInterval : int
+        Length of the interval between subsequent mreasurements in seconds
+    dataFileName : str
+     Name of the file where the collected data will be saved (the saved file will have a '.p' extension)
+
+    Returns
+    -------
+    dict[str, Union[list, ndarray]]
+        Data collected during the experiment. See examples for an example data set
+
+    Example
+    -------
+    Example data set:
+
+    >>> outputData = {
+    >>>     "time": [0, 5, 10, 15, 20, 25, 30],
+    >>>     "temp": [24.1, 25.2, 26.4, 27.2, 28.2, 29.2, 30.0],
+    >>>     "cap": [2e-9, 3e-9, 4e-9, 5e-9, 6e-9, 7e-9, 8e-9],
+    >>>     "capLoss": [2e-11, 2e-11, 2e-11, 2e-11, 2e-11, 2e-11, 2e-11]
+    >>> }
+    """
     if expInsts is None:
         expInsts = []
 

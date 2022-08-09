@@ -23,11 +23,34 @@ requiredEquipment = {
         {"purpose": "Hall Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
     ],
 }
+"""Required equipment for the hall effect experiment 
+"""
 
 expName = "Hall Effect Lab"
+"""Display name for the Hall Effect experiment
+"""
 
 
 def setup(instruments=None, serials=None, inGui=False):
+    """Setup function for the Hall effect experiment
+
+    Mainly handles sending proper errors and guidance to students so that they can do a majority of the troubleshooting.
+    The actual setup is done by the getAndSetupExpInsts() function.
+
+    Parameters
+    ----------
+    instruments: list of object
+        Array of all the available instruments (see initInstruments() docs for more details)
+    serials: object
+        Object with key as 'var' name in requiredEquipment and value as the serial number of the specific instrument to be used for the defied purpose
+    inGui: bool
+        Bool to define if the jupyter python widgets GUI is being used
+
+    Returns
+    -------
+    object
+        Object with keys as the 'var' name set in the requiredEquipment object and values as 'inst' objects (see initInstruments() docs)
+    """
     if serials is None:
         serials = {}
     if instruments is None:
@@ -62,17 +85,40 @@ def setup(instruments=None, serials=None, inGui=False):
 
 
 def exampleExpCode():
+    """Prints a demo of how the student should use the doExperiment() function for the Hall Effect lab
+
+    Returns
+    -------
+    None
+    """
     print("Example: ")
     print("   1 | data = hp.doExperiment(")
     print("   2 |          expInsts=hp.expInsts,")
     print("   3 |          emVolts=[10, 20, 30],")
     print("   4 |          hallSweep=(15, 30),")
     print("   5 |          dataPointsPerSupSweep=30,")
-    print("   5 |          measurementInterval=1,")
-    print("   5 |        )")
+    print("   6 |          measurementInterval=1,")
+    print("   7 |        )")
 
 
 def draw3DHELabGraphs(dataToGraph):
+    """Ouputs 3D grpah
+
+    A 3d graph is generated using matplotlib to represent the collected data in doExperiment() for the Hall effect
+    experiment
+
+    Parameters
+    ----------
+    dataToGraph : object
+        Data object from doExperiment() in the hall effect experiment
+
+    Returns
+    -------
+    None
+        Outputs 3D graph in jupyter python output window representing the collected data in doExperiment() in
+        the hall effect experiment
+
+    """
     fig = plt.figure(figsize=(7, 7))
     ax = fig.gca(projection='3d')
 
@@ -135,6 +181,49 @@ def draw3DHELabGraphs(dataToGraph):
 
 
 def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1, dataFileName=None):
+    """Function to perform the Hall Effect experiment
+
+    For every emVolt from input the experiment will sweep across the hall bar supply voltages provided in the supVoltSweep
+    input. During the data collection the current progress will be displayed in the jupyter python output. For more
+    information see the experiment webpage: https://hallpy.fofandi.dev/experiments/hallEffect .
+
+
+    Parameters
+    ----------
+    expInsts : object
+        Object with keys as the 'var' name set in requieredEquipment object and the value as the 'inst' object of the
+        corresponding equipment (see initInstruments() for the 'inst' object)
+    emVolts : list of float
+        A list of float values which dictate the electromagnet voltage input
+    supVoltSweep : tuple[float]
+        A tuple of 2 float values between which the function will sweep the input voltage for the hall bar
+    dataPointsPerSupSweep : int
+        The number of data points collected between the minimum and the maximum value of the hall bar voltage sweep (supVoltSweep)
+    measurementInterval : int
+        Measurement interval between data collections in seconds
+    dataFileName : str
+        Name of the file where the collected data will be saved (the saved file will have a '.p' extension)
+
+    Returns
+    -------
+     dict[str, dict[str, Union[list, int]]]
+        Data collected during the experiment. See examples for an example data set
+
+    Example
+    --------
+    Example of the output data format:
+
+    >>> outputData = {
+    >>>     '5.0': {
+    >>>         "time": [0, 1, 2, 3, 4, 5],
+    >>>         "supplyVolt": [0, 1, 2, 3, 4, 5],
+    >>>         "supplyCurr": [0, 1e-5, 2e-5, 3e-5, 4e-5, 5e-5],
+    >>>         "hallVolt": [0, 0.0005, 0.0007, 0.0008, 0.0010, 0.0015],
+    >>>         "emCurr": 0.200
+    >>>     }
+    >>> }
+    """
+
     if expInsts is None:
         expInsts = []
 
