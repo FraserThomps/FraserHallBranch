@@ -29,7 +29,7 @@ jobs:
         pip install build
     - name: Build package
       run: python -m build
-    - name: Publish package to TestPyPI
+    - name: Publish package to PIP
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: ${{ secrets.PYPI_USER }}
