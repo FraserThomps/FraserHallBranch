@@ -373,7 +373,16 @@ def clearFileAndSaveData(data, fileNameWithoutExt):
     if os.path.exists(fileName):
         os.remove(fileName)
     file = open(fileName, 'wb')
-    pickle.dump(data, file)
+
+    formattedData = {}
+
+    for key in data.keys():
+        if type(data[key]) == list:
+            formattedData[key] = np.array(data[key])
+        else:
+            formattedData[key] = data[key]
+
+    pickle.dump(formattedData, file)
 
 
 def getDataFromFile(fileNameWithExt):
@@ -399,4 +408,49 @@ def getDataFromFile(fileNameWithExt):
     file = open(fileNameWithExt, 'rb')
     dataFromFile = pickle.load(file)
     return dataFromFile
-__all__ = [reconnectInstructions, filterArrByKey]
+
+
+def getLCRCap(inst):
+    """Get capacitance reading from provided LCR
+
+    Parameters
+    ----------
+    inst: object
+        LCR PyVisa object (value of 'res' in the instrument object in initInstruments())
+
+    Returns
+    -------
+    float
+        Capacitance as float
+    """
+
+    rawMeasurement = inst.query("FETCh?").split(",")  # split from read in
+    cap = rawMeasurement[0].strip()  # strip
+
+    if "nF" in cap:
+        cap = cap.replace(" nF", "E-9")
+    if "pF" in cap:
+        cap = cap.replace(" pF", "E-12")
+    if "fF" in cap:
+        cap = cap.replace(" fF", "E-15")
+
+    return np.float(cap)  # return capacitance
+
+
+def getLCRCapLoss(inst):
+    """Get capacitance loss reading from provided LCR
+
+        Parameters
+        ----------
+        inst: object
+            LCR PyVisa object (value of 'res' in the instrument object in initInstruments())
+
+        Returns
+        -------
+        float
+            Capacitance loss as float
+        """
+    rawMeasurement = inst.query("FETCh?").split(",")
+    capLoss = rawMeasurement[1].strip()
+
+    return np.float(capLoss)

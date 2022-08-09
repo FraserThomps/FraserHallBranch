@@ -4,9 +4,11 @@ import numpy as np
 from IPython.core.display import clear_output
 from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
-# Important import
-from mpl_toolkits.mplot3d import Axes3D
 from pyvisa import VisaIOError
+
+# noinspection
+from mpl_toolkits.mplot3d import Axes3D
+# Important import even though it is not used
 
 from .__init__ import getAndSetupExpInsts
 from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt, clearFileAndSaveData
@@ -132,17 +134,12 @@ def draw3DHELabGraphs(dataToGraph):
     plt.show()
 
 
-def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1, dafaFileName=None):
+def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1, dataFileName=None):
     if expInsts is None:
         expInsts = []
 
     if emVolts is None:
         emVolts = []
-
-    if type(dafaFileName) is not str and dafaFileName is not None:
-        print("\x1b[;41m Please provide valid file name for the data to be saved \x1b[m")
-        raise TypeError("dafaFileName was found to be a " + str(type(dafaFileName)) + "when it is supposed to be a "
-                                                                                      "string")
 
     inGui = True
 
@@ -223,6 +220,11 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         print("Voltage Increment = (Max Voltage - Min Voltage) / (Experiment Length (s) / Measurement Interval (s))")
         raise ValueError("Current supply voltage increment would be too low. ")
 
+    if type(dataFileName) is not str and dataFileName is not None:
+        print("\x1b[;41m Please provide valid file name for the data to be saved \x1b[m")
+        raise TypeError("dataFileName was found to be a " + str(type(dataFileName)) + "when it is supposed to be a "
+                                                                                      "string")
+
     emPS = expInsts["emPS"]["res"]
     hcPS = expInsts["hcPS"]["res"]
     hvMM = expInsts["hvMM"]["res"]
@@ -268,7 +270,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 data[str(emV)]["supplyCurr"].append(curSupCurr)
                 data[str(emV)]["hallVolt"].append(curHallVolt)
 
-                clearFileAndSaveData(data, dafaFileName)
+                clearFileAndSaveData(data, dataFileName)
 
                 timePassed += measurementInterval
                 timeOnCurSupLoop += measurementInterval

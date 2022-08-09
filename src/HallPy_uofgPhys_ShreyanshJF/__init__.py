@@ -34,13 +34,12 @@ from .constants import supportedInstruments, serialRegex
 from .helper import reconnectInstructions, getInstTypeCount, filterArrByKey
 
 allExperiments = [
-    # curieWeiss,
+    curieWeiss,
     hallEffect,
-    # test
 ]
 
 
-def initInstruments(inGui: bool =False):
+def initInstruments(inGui: bool = False):
     """Initializing and recognising connected equipment.
 
     Function does the setup for any of the experiments which use this HallPy_Teach. It recognises the connected
