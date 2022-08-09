@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Test Python Package to Test.Pypi.org
+name: Upload Test Python Package to Pypi.org
 
 on: [push]
 
@@ -32,5 +32,5 @@ jobs:
     - name: Publish package to PIP
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        user: ${{ secrets.PYPI_USER }}
-        password: ${{ secrets.PIPY_PASS }}
+        user: __token__
+        password: ${{ secrets.PIPY_API_TOKEN }}
