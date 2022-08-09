@@ -25,7 +25,7 @@ Submodules
 import re
 
 import pyvisa
-from .experiments import curieWeiss, hallEffect, test
+from .experiments import curieWeiss, hallEffect
 from IPython.core.display import display
 from IPython.display import clear_output
 import ipywidgets as widgets

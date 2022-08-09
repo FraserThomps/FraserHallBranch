@@ -1,8 +1,8 @@
 [project]
-name = "HallPy_uofgPhys_ShreyanshJF"
-version = "0.0.105"
+name = "HallPy_Teach"
+version = "0.1.0"
 authors = [
-    {name="Shreyansh Fofandi", email="shreyanshjf@gmail.com"},
+    {name="Shreyansh Fofandi", email="me@fofandi.dev"},
     {name="Dr. Ian MacLaren", email="ian.maclaren@glasgow.ac.uk"},
 ]
 description = "A python library to aid physics students in performing lab activities. Developed for the School of Physics and Astronomy at the University of Glasgow."
