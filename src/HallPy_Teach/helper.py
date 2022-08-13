@@ -149,7 +149,7 @@ def notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
         print("\x1b[;43m        plugging in the " + instType + "(s).                          \x1b[m")
 
 
-def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
+def showLiveReadings(liveReadings=None, g1=None, g2=None, g3=None, g4=None):
     """Function to display life readings
 
     Helper function to display information from a dictionary where the key is the name of the reading and the value is
@@ -270,7 +270,7 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
         plt.close(fig)
 
     # Checking if live readings need to be shown
-    if liveReadings != 0:
+    if liveReadings is not None:
         displayItems = []
         for i in liveReadings.keys():
             if 'Time' in i:
@@ -293,11 +293,11 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
                                     )
 
     # Showing graphs and live readings in correct order
-    if liveReadings != 0 or g1 != 0 or g2 != 0 or g3 != 0 or g4 != 0:
+    if liveReadings is not None or g1 is not None or g2 is not None or g3 is not None or g4 is not None:
         finalDisplayStack = []
-        if liveReadings != 0:
+        if liveReadings is not None:
             finalDisplayStack.append(widgets.HBox(displayItems))
-        if g1 != 0 or g2 != 0 or g3 != 0 or g4 != 0:
+        if g1 is not None or g2 is not None or g3 is not None or g4 is not None:
             _ = widgets.Image(value=open('tempImg.jpeg', 'rb').read(), format='png', width=width)
             finalDisplayStack.append(_)
             os.remove('tempImg.jpeg')
