@@ -199,7 +199,7 @@ def showLiveReadings(liveReadings, g1=None, g2=None, g3=None, g4=None):
 
     # Checking if graphs need to be shown
     if g1 is not None or g2 is not None or g3 is not None or g4 is not None:
-        graphs = [i for i in [g1, g2, g3, g4] if i != 0]
+        graphs = [i for i in [g1, g2, g3, g4] if i is not None]
         fig = plt.figure()
         if np.size(graphs) == 1:
             width = 450
