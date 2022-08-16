@@ -154,10 +154,11 @@ def initInstruments(inGui: bool = False):
         return instruments
 
 
+# noinspection PyUnusedLocal
 class Setup:
     """Setting up instruments with GUI in jupyter python.
 
-        Class uses initInstruments() and individual experiments setup functions to setup the instruments for performing
+        Class uses initInstruments() and individual experiments setup functions to set up the instruments for performing
         the selected experiment. Subsequently, user will have to use classInstance.expInsts object in the doExpeiment()
         function to perform the given experiment.
 
@@ -165,7 +166,7 @@ class Setup:
         --------
         + initInstruments() : Setup class uses this function to find all connected instruments
         + hallEffect.doExperiment() :  Used  after Setup() class initiation - Example doExperiment() function
-        + hallEffect.setup() : Used in the Setup() class to setup selected experiment from the GUI
+        + hallEffect.setup() : Used in the Setup() class to set up selected experiment from the GUI
 
         Notes
         -------
@@ -205,7 +206,7 @@ class Setup:
         self.submitBtn = widgets.Button(description="Setup Experiment", icon="flask")
         self.submitBtn.on_click(self.handle_pickExpSubmit)
 
-        # Objects and functions to be used after class instance is setup
+        # Objects and functions to be used after class instance is set up
         self.expInsts = None
         self.doExperiment = None
 

@@ -104,7 +104,7 @@ def doExperiment(expInsts=None, exptLength=None, measurementInterval=5, dataFile
         Length of time the experiment is supposed to run for in minutes.
     measurementInterval : int
         Length of the interval between subsequent mreasurements in seconds
-    dataFileName : str
+    dataFileName : str, optional
      Name of the file where the collected data will be saved (the saved file will have a '.p' extension)
 
     Returns
@@ -186,7 +186,6 @@ def doExperiment(expInsts=None, exptLength=None, measurementInterval=5, dataFile
                 clearFileAndSaveData(data, dataFileName)
 
             if curTemp > maxOperatingTemp:
-
                 print("\x1b[;41m IMMEDIATELY TURN OFF THE HEATING ELEMENT \x1b[m")
                 print("The temperature has exceeded the maximum operating temperature of", str(maxOperatingTemp), "ºC")
                 print("The current temperature is", curTemp, "ºC")
@@ -237,9 +236,13 @@ def doExperiment(expInsts=None, exptLength=None, measurementInterval=5, dataFile
     except VisaIOError:
         print("\x1b[;41m IMMEDIATELY TURN OFF THE HEATING ELEMENT \x1b[m")
         print("Could not complete the full experiment")
+        if dataFileName is not None:
+            print("The data collected till now has been saved in", dataFileName + ".p")
         raise
     except:
         print("\x1b[43m Could not complete the full experiment \x1b[m")
+        if dataFileName is not None:
+            print("The data collected till now has been saved in", dataFileName + ".p")
         raise
 
     print("Experiment completed")

@@ -3,7 +3,6 @@ import pickle
 import time
 
 import numpy as np
-from IPython.core.display import clear_output
 from ipywidgets import widgets
 from matplotlib import pyplot as plt
 from IPython.display import display
@@ -33,7 +32,7 @@ def filterArrByKey(arr, key, val):
 
 
 def reconnectInstructions(inGui=False):
-    """Helper function to dispaly reconnection instructions
+    """Helper function to display reconnection instructions
 
     Parameters
     ----------
@@ -149,6 +148,7 @@ def notEnoughReqInstType(instType, requiredEquipment, instruments, inGui=False):
         print("\x1b[;43m        plugging in the " + instType + "(s).                          \x1b[m")
 
 
+# noinspection PyBroadException
 def showLiveReadings(liveReadings=None, g1=None, g2=None, g3=None, g4=None):
     """Function to display life readings
 
@@ -330,19 +330,19 @@ def setPSVolt(volt, inst, channel=1, instSleepTime=0.1):
     time.sleep(instSleepTime)
 
 
-def setPSCurr(volt, inst, channel=1, instSleepTime=0.1):
+def setPSCurr(curr, inst, channel=1, instSleepTime=0.1):
     """Set Power Supply Current
 
         Function uses pyvisa instrument object to set power supply current
 
         Parameters
         ----------
-        volt : int or float
+        curr : int or float
             Current value to set
         inst : object
             Power supply Pyvisa Object (value of 'res' in the instrument object in initInstruments())
         channel : int, default=1
-            Channel of the power supply which the voltage is to be set to (usually 1 or 2)
+            Channel of the power supply which the current is to be set to (usually 1 or 2)
         instSleepTime : float, default=0.1
             Time to sleep for inorder to make sure current change is applied before carrying on operations
 
@@ -351,7 +351,7 @@ def setPSCurr(volt, inst, channel=1, instSleepTime=0.1):
         None
 
         """
-    inst.write("ISET" + str(int(channel)) + ":" + str(volt))
+    inst.write("ISET" + str(int(channel)) + ":" + str(curr))
     time.sleep(instSleepTime)
 
 
@@ -363,7 +363,7 @@ def clearFileAndSaveData(data, fileNameWithoutExt):
     ----------
     data: any
     fileNameWithoutExt: str
-        File name without extention. It will be saved as a .p file
+        File name without extension. It will be saved as a .p file
 
     Returns
     -------

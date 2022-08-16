@@ -48,7 +48,7 @@ def getAndSetupExpInsts(requiredEquipment=None, instruments=None, serials=None, 
     Returns
     -------
     object
-        Object with the instruments for the experiment. Key same as var name set in requiredEquipment in epeximent.py
+        Object with the instruments for the experiment. Key same as var name set in requiredEquipment in experiment.py
         file and value as instrument object (see initInstruments() docs for object details)
 
     """
