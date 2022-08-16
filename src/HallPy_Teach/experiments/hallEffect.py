@@ -102,7 +102,7 @@ def exampleExpCode():
 
 
 def draw3DHELabGraphs(dataToGraph):
-    """Ouputs 3D grpah
+    """Outputs 3D graph
 
     A 3d graph is generated using matplotlib to represent the collected data in doExperiment() for the Hall effect
     experiment
@@ -201,7 +201,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         The number of data points collected between the minimum and the maximum value of the hall bar voltage sweep (supVoltSweep)
     measurementInterval : int
         Measurement interval between data collections in seconds
-    dataFileName : str
+    dataFileName : str, optional
         Name of the file where the collected data will be saved (the saved file will have a '.p' extension)
 
     Returns
@@ -359,7 +359,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 data[str(emV)]["supplyCurr"].append(curSupCurr)
                 data[str(emV)]["hallVolt"].append(curHallVolt)
 
-                clearFileAndSaveData(data, dataFileName)
+                if dataFileName is not None:
+                    clearFileAndSaveData(data, dataFileName)
 
                 timePassed += measurementInterval
                 timeOnCurSupLoop += measurementInterval
@@ -402,6 +403,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     except VisaIOError:
         print("\x1b[43m IMMEDIATELY SET ALL THE POWER SUPPLY VOLTAGES TO 0 \x1b[m")
         print("Could not complete the full experiment")
+        if dataFileName is not None:
+            print("The data collected till now has been saved in", dataFileName + ".p")
         raise
     except:
         setPSCurr(0.000, emPS)
@@ -410,9 +413,13 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
         setPSVolt(0.000, hcPS)
         print("The power supplies have been reset.")
         print("\x1b[43m Could not complete the full experiment \x1b[m")
+        if dataFileName is not None:
+            print("The data collected till now has been saved in", dataFileName + ".p")
         raise
 
     print("Data collection completed.")
+    if dataFileName is not None:
+        print("The data collected till now has been saved in", dataFileName + ".p")
 
     for emV in data.keys():
         for key in data[emV].keys():
