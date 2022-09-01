@@ -327,11 +327,12 @@ class Setup:
 
         expSetupFunc = self.pickExpDropdown.value.setup
         expReq = self.pickExpDropdown.value.requiredEquipment
+        self.doExperiment = self.pickExpDropdown.value.doExperiment
         expName = self.pickExpDropdown.label
-        # TO-DO Check this
-        # self.doExperiment = self.pickExpDropdown.value.doExperiment
+
         self.pickExpDropdown.close = True
         submitBtnAfterClick.close = True
+
         try:
             self.expInsts = self.assignInstsAndSetupExp(
                 expName=expName,
