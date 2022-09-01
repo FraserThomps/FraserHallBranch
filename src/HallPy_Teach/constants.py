@@ -1,8 +1,8 @@
 
 supportedInstruments = {
-    "Power Supply": ["TENMA 72-2710", "GWInstek,GDM8342"],
+    "Power Supply": ["TENMA 72-2710"],
     "LCR Meter": ["B&K Precision ,891"],
-    "Multimeter": ["KEITHLEY INSTRUMENTS INC.,MODEL 2110"]
+    "Multimeter": ["KEITHLEY INSTRUMENTS INC.,MODEL 2110", "GWInstek,GDM8342"]
 }
 """List of supported instruments sorted by the type of instruments
 """
