@@ -11,7 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # Important import even though it is not used
 
 from .__init__ import getAndSetupExpInsts
-from ..helper import reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt, clearFileAndSaveData
+from ..helper import parseQueryReading, reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt, clearFileAndSaveData
 
 requiredEquipment = {
     "Power Supply": [
@@ -345,8 +345,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
             while curSupVolt < endSupVolt:
                 setPSVolt(curSupVolt, hcPS)
                 time.sleep(0.1)
-                curSupCurr = float(hcMM.query("READ?"))
-                curHallVolt = float(hvMM.query("READ?"))
+                curSupCurr = parseQueryReading(hcMM.query("READ?"))
+                curHallVolt = parseQueryReading(hvMM.query("READ?"))
                 if float(curSupCurr) > maxSupCurr:
                     raise Warning("Supply current was too high. Current before cut off: " + str(curSupCurr))
 

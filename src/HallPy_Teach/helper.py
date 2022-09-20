@@ -10,6 +10,37 @@ from IPython.display import display
 from .constants import supportedInstruments
 
 
+def parseQueryReading(reading):
+    """Helper function parse incoming float values in different formats
+
+        Parameters
+        ----------
+        reading : string
+            String from instrument query
+
+        Returns
+        -------
+        float
+            Returns the first float value found in the string
+        """
+
+    try:
+        val = float(reading)
+        return (val)
+    except ValueError:
+        try:
+            val = reading.split(",")
+            return float(val[0])
+        except ValueError:
+            try:
+                val = reading.split(" ")
+                return float(val[0])
+            except:
+                raise
+        except:
+            raise
+
+
 def filterArrByKey(arr, key, val):
     """Helper function to find all objects with the same key value in an array of objects
 
