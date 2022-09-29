@@ -19,11 +19,11 @@ requiredEquipment = {
         {"purpose": "Current Supply", "var": "hcPS"}
     ],
     "Multimeter": [
-        {"purpose": "Hall Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]},
-        {"purpose": "Hall Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
+        {"purpose": "Hall Bar Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}, #could be Hall voltage or longitudinal voltage, just depending
+        {"purpose": "Hall Bar Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
     ],
 }
-"""Required equipment for the hall effect experiment 
+"""Required equipment for the Hall Effect experiment 
 """
 
 expName = "Hall Effect Lab"
@@ -32,7 +32,7 @@ expName = "Hall Effect Lab"
 
 
 def setup(instruments=None, serials=None, inGui=False):
-    """Setup function for the Hall effect experiment
+    """Setup function for the Hall Effect experiment
 
     Mainly handles sending proper errors and guidance to students so that they can do a majority of the troubleshooting.
     The actual setup is done by the getAndSetupExpInsts() function.
@@ -104,7 +104,7 @@ def exampleExpCode():
 def draw3DHELabGraphs(dataToGraph):
     """Outputs 3D graph
 
-    A 3d graph is generated using matplotlib to represent the collected data in doExperiment() for the Hall effect
+    A 3D graph is generated using matplotlib to represent the collected data in doExperiment() for the Hall effect
     experiment
 
     Parameters
@@ -123,19 +123,19 @@ def draw3DHELabGraphs(dataToGraph):
     ax = fig.gca(projection='3d')
 
     toGraphOnX = "supplyCurr"
-    toGraphOnY = "hallVolt"
+    toGraphOnY = "hallBarVolt" #propose name change here for same reason as above
 
     dataScaling = {
         "time": 1,
         "supplyVolt": 1,
         "supplyCurr": 1000000,
-        "hallVolt": 1000,
+        "hallBarVolt": 1000,
     }
     dataGraphLabels = {
         "time": "Time (s)",
         "supplyVolt": "Supply Volt. (V)",
         "supplyCurr": "Supply Curr. (\u03bcA)",
-        "hallVolt": "Hall Volt. (mV)",
+        "hallBarVolt": "Hall Bar Volt. (mV)",
     }
 
     emVsWithData = []
