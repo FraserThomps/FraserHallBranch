@@ -18,7 +18,16 @@ jobs:
         pip install
         build
         --user
-    - name: Build a binary wheel and a source tarball
+    - name: Get Release Name
+      uses: olegtarasov/get-tag@v2.1.2
+    - name: Update Package Version Number
+      uses: jacobtomlinson/gha-find-replace@v3
+      with:
+        find: "GITHUB.RELEASE.TAG"
+        replace: ${{ steps.tagName.outputs.tag }}
+        regex: false
+        include: "pyproject.toml"
+    - name: Build Package (binary wheel and source tarball)
       run: python3 -m build
     - name: Store the distribution packages
       uses: actions/upload-artifact@v3
