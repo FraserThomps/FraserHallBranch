@@ -25,14 +25,12 @@ jobs:
         replace: "0.1.7"
         regex: false
         include: "pyproject.toml"
-    - name: Get Release Name
-      uses: olegtarasov/get-tag@v2.1.2
     - name: Update Package Version Number
       if: startsWith(github.ref, 'refs/tags/')
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
-        replace: ${{ steps.tagName.outputs.tag }}
+        replace: ${{github.ref_name}}
         regex: false
         include: "pyproject.toml"
     - name: Build Package (binary wheel and source tarball)
