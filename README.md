@@ -1,6 +1,6 @@
 # HallPy_Teach
 
-## Testing the workflow 1
+## Testing the workflow 2
 
 ### Get Started
 > pip install hallpy_teach
