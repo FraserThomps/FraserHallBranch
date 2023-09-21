@@ -5,7 +5,7 @@ jobs:
   build:
     name: Build distribution 📦
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -26,14 +26,16 @@ jobs:
       with:
         find: "GITHUB.RELEASE.TAG"
         replace: ${{ steps.tagName.outputs.tag }}
-        include: "**pyproject.toml"
-    - name: Update package Version to test if package builds
+        regex: false
+        include: "pyproject.toml"
+    - name: Update Package Version Number for testing build
       if: !startsWith(github.ref, 'refs/tags/')
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
         replace: "0.1.7"
-        include: "**pyproject.toml"
+        regex: false
+        include: "pyproject.toml"
     - name: Build Package (binary wheel and source tarball)
       run: python3 -m build
     - name: Store the distribution packages
