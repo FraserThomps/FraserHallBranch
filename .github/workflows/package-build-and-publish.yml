@@ -19,7 +19,7 @@ jobs:
         build
         --user
     - name: Base Package Version Update (non-release build test)
-      if: startsWith(github.ref_type, 'tag')
+      if: startsWith(github.ref, 'branch')
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
@@ -27,7 +27,7 @@ jobs:
         regex: false
         include: "**pyproject.toml"
     - name: Update Package Version Number
-      if: startsWith(github.ref_type, 'branch')
+      if: startsWith(github.ref_type, 'tag')
       uses: jacobtomlinson/gha-find-replace@v3
       env:
           GITHUB_RELEASE_TAG: ${{ github.ref_name }}
