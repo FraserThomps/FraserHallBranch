@@ -6,10 +6,6 @@ from matplotlib import pyplot as plt
 from matplotlib.collections import PolyCollection
 from pyvisa import VisaIOError
 
-# noinspection
-from mpl_toolkits.mplot3d import Axes3D
-# Important import even though it is not used
-
 from .__init__ import getAndSetupExpInsts
 from ..helper import parseQueryReading, reconnectInstructions, showLiveReadings, setPSCurr, setPSVolt, clearFileAndSaveData
 
@@ -120,7 +116,7 @@ def draw3DHELabGraphs(dataToGraph):
 
     """
     fig = plt.figure(figsize=(7, 7))
-    ax = Axes3D(fig)
+    ax = fig.add_subplot(projection='3d')
 
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallBarVolt" #propose name change here for same reason as above
@@ -218,7 +214,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
     >>>         "time": [0, 1, 2, 3, 4, 5],
     >>>         "supplyVolt": [0, 1, 2, 3, 4, 5],
     >>>         "supplyCurr": [0, 1e-5, 2e-5, 3e-5, 4e-5, 5e-5],
-    >>>         "hallVolt": [0, 0.0005, 0.0007, 0.0008, 0.0010, 0.0015],
+    >>>         "hallBarVolt": [0, 0.0005, 0.0007, 0.0008, 0.0010, 0.0015],
     >>>         "emCurr": 0.200
     >>>     }
     >>> }
