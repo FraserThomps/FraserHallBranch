@@ -23,7 +23,7 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
-        replace: ${{github.ref_name}}
+        replace: "0.1.1"
         regex: false
         include: "**pyproject.toml"
     - name: Update Package Version Number
@@ -31,10 +31,9 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
-        replace: github.ref_name
+        replace: ${{github.ref_name}}
         regex: false
         include: "**pyproject.toml"
-        run: 'echo "::debug::Set the Octocat variable"'
     - name: Build Package (binary wheel and source tarball)
       run: python3 -m build
     - name: Store the distribution packages
