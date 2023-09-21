@@ -21,15 +21,15 @@ jobs:
     - name: Get Release Name
       uses: olegtarasov/get-tag@v2.1.2
     - name: Update Package Version Number
-      if: startsWith(github.ref, 'refs/tags/')
+      if: ${{ steps.tagName.outputs.tag }}
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
         replace: ${{ steps.tagName.outputs.tag }}
         regex: false
         include: "pyproject.toml"
-    - name: Update Package Version Number for testing build
-      if: !startsWith(github.ref, 'refs/tags/')
+    - name: Update Package Version Number
+      if: startsWith(github.ref, 'refs/head/')
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
