@@ -26,7 +26,6 @@ jobs:
       with:
         find: "GITHUB.RELEASE.TAG"
         replace: ${{ steps.tagName.outputs.tag }}
-        regex: false
         include: "**pyproject.toml"
     - name: Update package Version to test if package builds
       uses: jacobtomlinson/gha-find-replace@v3
@@ -34,7 +33,6 @@ jobs:
       with:
         find: "GITHUB.RELEASE.TAG"
         replace: "0.1.7"
-        regex: false
         include: "**pyproject.toml"
     - name: Build Package (binary wheel and source tarball)
       run: python3 -m build
