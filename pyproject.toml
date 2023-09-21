@@ -1,6 +1,7 @@
 [project]
 name = "HallPy_Teach"
-version = "0.1.8.1"
+# Do not edit the next line
+version = "GITHUB.RELEASE.TAG"
 authors = [
     {name="Shreyansh Fofandi", email="me@fofandi.dev"},
     {name="Dr. Ian MacLaren", email="ian.maclaren@glasgow.ac.uk"},
