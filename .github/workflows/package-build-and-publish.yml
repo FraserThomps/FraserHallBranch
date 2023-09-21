@@ -19,7 +19,7 @@ jobs:
         build
         --user
     - name: Base Package Version Update (non-release build test)
-      if: startsWith(github.ref, 'branch')
+      if: startsWith(github.ref_type, 'branch')
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
