@@ -23,7 +23,7 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
-        replace: github.ref_name
+        replace: ${{github.ref_name}}
         regex: false
         include: "**pyproject.toml"
     - name: Update Package Version Number
