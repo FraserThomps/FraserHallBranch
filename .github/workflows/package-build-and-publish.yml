@@ -33,6 +33,7 @@ jobs:
         replace: ${{github.ref_name}}
         regex: false
         include: "**pyproject.toml"
+        run: 'echo "::debug::Set the Octocat variable"'
     - name: Build Package (binary wheel and source tarball)
       run: python3 -m build
     - name: Store the distribution packages
