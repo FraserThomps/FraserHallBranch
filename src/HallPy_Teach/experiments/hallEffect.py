@@ -120,7 +120,7 @@ def draw3DHELabGraphs(dataToGraph):
 
     """
     fig = plt.figure(figsize=(7, 7))
-    ax = Axes3D(projection='3d')
+    ax = Axes3D(fig)
 
     toGraphOnX = "supplyCurr"
     toGraphOnY = "hallBarVolt" #propose name change here for same reason as above
