@@ -22,7 +22,7 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
-        replace: "0.1.7"
+        replace: "0.1.1"
         regex: false
         include: "**pyproject.toml"
     - name: Update Package Version Number
