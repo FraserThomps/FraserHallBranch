@@ -20,8 +20,8 @@ jobs:
         --user
     - name: Get Release Name
       uses: olegtarasov/get-tag@v2.1.2
-      if: ${{ steps.tagName.outputs.tag }}
     - name: Update Package Version Number
+      if: ${{ steps.tagName.outputs.tag }}
       uses: jacobtomlinson/gha-find-replace@v3
       with:
         find: "GITHUB.RELEASE.TAG"
