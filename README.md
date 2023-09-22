@@ -28,7 +28,7 @@ experiment = Teach.Setup()
 ```
 
 #### Step 2: Experiment Parameters & Data Collection
-***You cannot run Step 2 without compelting step 1***
+***You cannot run Step 2 without compelting step 1*** <br>
 When the following code block is run you will start seeing the data being collected.
 Only run this codeblock once your you've setup your experiment aparatus and you're ready to collect the data. 
 If the experiment requires parameters to be set, such as *voltage sweep ranges* and *data collection intervals* you will see a guide to setting the required parameter(s).
