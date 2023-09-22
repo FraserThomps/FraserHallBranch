@@ -2,12 +2,18 @@
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/maclariz/HallPy_Teach)
   ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/maclariz/HallPy_Teach/.github%2Fworkflows%2Fpackage-build-and-publish.yml)  ![PyPI - Version](https://img.shields.io/pypi/v/HallPy_Teach)
 
-
-### Get Started
-> pip install hallpy_teach
-
 ## Description
 This package uses PyVISA to control and read instruments (power supplies, multimeters etc.) to run experiments in the Physics Honours Laboratory, initially for Hall Effect, although control of Curie Weiss law is also envisaged. This automates the data acquisition and allows easy recording of many data points in patterns or intervals defined by the user, and produces data files containing the results in numpy arrays, suitable for plotting and data analysis.
+
+## Get Started
+Install the package
+```python
+pip install HallPy_Teach
+```
+Use it in a notebook with
+```python
+import HallPy_Teach as hp
+```
 
 ## Guide to push updates to the package
 - Make your changes on a different branch 
