@@ -1,5 +1,7 @@
 # HallPy_Teach
-![PyPI - Version](https://img.shields.io/pypi/v/HallPy_Teach)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/maclariz/HallPy_Teach)
+  ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/maclariz/HallPy_Teach/.github%2Fworkflows%2Fpackage-build-and-publish.yml)  ![PyPI - Version](https://img.shields.io/pypi/v/HallPy_Teach)
+
 
 ### Get Started
 > pip install hallpy_teach
