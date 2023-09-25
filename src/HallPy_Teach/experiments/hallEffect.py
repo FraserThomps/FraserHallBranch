@@ -89,12 +89,13 @@ def exampleExpCode():
     """
     print("Example: ")
     print("   1 | data = hp.doExperiment(")
-    print("   2 |          expInsts=hp.expInsts,")
-    print("   3 |          emVolts=[10, 20, 30],")
-    print("   4 |          hallSweep=(15, 30),")
-    print("   5 |          dataPointsPerSupSweep=30,")
-    print("   6 |          measurementInterval=1,")
-    print("   7 |        )")
+    print("   2 |          expInsts=hp.expInsts,         [setup for the instruments already configured]")
+    print("   3 |          emVolts=[10, 20, 30],         [any sane list of electromagnet voltages in the 0-30V range]")
+    print("   4 |          hallSweep=(15, 30),           [any sane pair of drive voltages for current in the bar]")
+    print("   5 |          dataPointsPerSupSweep=30,     [how many data points you want in this voltage range")
+    print("   6 |          dataFileName='YourFileName'   [optional, if you want it to save to a file]")
+    print("   7 |          plot=True                     [or False to turn off live plotting]")
+    print("   8 |        )")
 
 
 def draw3DHELabGraphs(dataToGraph):
@@ -207,6 +208,8 @@ def doExperiment(
         Measurement interval between data collections in seconds
     dataFileName : str, optional
         Name of the file where the collected data will be saved (the saved file will have a '.p' extension)
+    plot : bool
+        True turns plotting on (default), False turns it off
 
     Returns
     -------
@@ -293,11 +296,11 @@ def doExperiment(
     emVolts.sort()
     for V in emVolts:
         data[str(V)] = {
-            "time": [],
-            "supplyVolt": [],
-            "supplyCurr": [],
-            "hallBarVolt": [],
-            "emCurr": 0
+            "time": [],              #actual clock time
+            "supplyVolt": [],        #supply Voltage - more for reference than actual use in calculation 
+            "supplyCurr": [],        #the longitudinal current measured for this voltage
+            "hallBarVolt": [],       #the voltage measured across the chosen terminals on the Hall bar
+            "emCurr": 0              #the measured current through the electromagnet - for conversion to field
         }
 
     supVoltIncrement = (supVoltSweep[1] - supVoltSweep[0]) / dataPointsPerSupSweep
