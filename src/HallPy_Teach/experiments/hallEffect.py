@@ -353,7 +353,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 data[str(emV)]["time"].append(timeOnCurSupLoop)
                 data[str(emV)]["supplyVolt"].append(curSupVolt)
                 data[str(emV)]["supplyCurr"].append(curSupCurr)
-                data[str(emV)]["hallVolt"].append(curHallVolt)
+                data[str(emV)]["hallBarVolt"].append(curHallVolt)
 
                 if dataFileName is not None:
                     clearFileAndSaveData(data, dataFileName)
