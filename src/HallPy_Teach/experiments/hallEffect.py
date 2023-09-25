@@ -382,7 +382,7 @@ def doExperiment(
                 }
 
                 clear_output(wait=True)
-                if plot=True:
+                if plot==True:
                     draw3DHELabGraphs(data)
                 showLiveReadings(liveReading)
 
