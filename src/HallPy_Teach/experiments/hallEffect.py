@@ -288,7 +288,7 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
             "time": [],
             "supplyVolt": [],
             "supplyCurr": [],
-            "hallVolt": [],
+            "hallBarVolt": [],
             "emCurr": 0
         }
 
