@@ -176,7 +176,15 @@ def draw3DHELabGraphs(dataToGraph):
     plt.show()
 
 
-def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupSweep=0, measurementInterval=1, dataFileName=None):
+def doExperiment(
+    expInsts=None, 
+    emVolts=None, 
+    supVoltSweep=(), 
+    dataPointsPerSupSweep=0, 
+    measurementInterval=1, 
+    dataFileName=None,
+    plot=True
+):
     """Function to perform the Hall Effect experiment
 
     For every emVolt from input the experiment will sweep across the hall bar supply voltages provided in the supVoltSweep
@@ -374,7 +382,8 @@ def doExperiment(expInsts=None, emVolts=None, supVoltSweep=(), dataPointsPerSupS
                 }
 
                 clear_output(wait=True)
-                draw3DHELabGraphs(data)
+                if plot=True:
+                    draw3DHELabGraphs(data)
                 showLiveReadings(liveReading)
 
                 curSupVolt += supVoltIncrement
