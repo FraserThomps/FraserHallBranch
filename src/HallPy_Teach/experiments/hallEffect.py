@@ -15,8 +15,9 @@ requiredEquipment = {
         {"purpose": "Current Supply", "var": "hcPS"}
     ],
     "Multimeter": [
-        {"purpose": "Hall Bar Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}, #could be Hall voltage or longitudinal voltage, just depending
-        {"purpose": "Hall Bar Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
+        {"purpose": "Longitudinal Hall Bar Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}, #could be Hall voltage or longitudinal voltage, just depending
+        {"purpose": "Transverse Hall Bar Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}, #for an extra instrument
+        {"purpose": "Hall Bar Current", "var": "hcMM", "config": ["CONF:CURR:DC"]},
         {"purpose": "Longitudinal Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}
     ],
 }
