@@ -17,6 +17,7 @@ requiredEquipment = {
     "Multimeter": [
         {"purpose": "Hall Bar Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}, #could be Hall voltage or longitudinal voltage, just depending
         {"purpose": "Hall Bar Current", "var": "hcMM", "config": ["CONF:CURR:DC"]}
+        {"purpose": "Longitudinal Voltage", "var": "hvMM", "config": ["CONF:VOLT:DC"]}
     ],
 }
 """Required equipment for the Hall Effect experiment 
@@ -435,3 +436,5 @@ def doExperiment(
                 data[emV][key] = np.array(data[emV][key])
 
     return data
+
+
